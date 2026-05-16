@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace yolo_home_camera_project
+namespace yolo_home_camera_project.Views
 {
     /// <summary>
     /// KeywordManagePage.xaml에 대한 상호 작용 논리

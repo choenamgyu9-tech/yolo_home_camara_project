@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace yolo_home_camera_project
+namespace yolo_home_camera_project.Views
 {
     /// <summary>
-    /// ReportPage.xaml에 대한 상호 작용 논리
+    /// VideoAnalysisPage.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class ReportPage : Page
+    public partial class VideoAnalysisPage : Page
     {
-        public ReportPage()
+        public VideoAnalysisPage()
         {
             InitializeComponent();
         }

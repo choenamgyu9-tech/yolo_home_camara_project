@@ -5,22 +5,102 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:yolo_home_camera_project"
         mc:Ignorable="d"
-        Title="YOLO Home Camera" Height="450" Width="800">
-    <Grid Margin="20">
+        Title="YOLO Home Camera"
+        Height="450"
+        Width="800">
+    <Grid Background="#FFF7F7F7">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-            <Button Content="영상 분석 화면" Width="130" Height="40" Margin="0,0,10,0" Click="VideoAnalysisButton_Click"/>
-            <Button Content="키워드 관리 화면" Width="130" Height="40" Margin="0,0,10,0" Click="KeywordManageButton_Click"/>
-            <Button Content="보고서 화면" Width="130" Height="40" Margin="0,0,10,0" Click="ReportButton_Click"/>
-            <Button Content="설정 화면" Width="130" Height="40" Click="SettingsButton_Click"/>
-        </StackPanel>
+        <Border Background="White"
+                BorderBrush="#FFE0E0E0"
+                BorderThickness="0,0,0,1">
+            <Grid Margin="20,0">
+                <Button x:Name="MenuToggleButton"
+                        Content="☰"
+                        Width="42"
+                        Height="42"
+                        FontSize="20"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Click="MenuToggleButton_Click"/>
+
+                <TextBlock Text="YOLO Home Camera"
+                           FontSize="20"
+                           FontWeight="Bold"
+                           Margin="58,0,0,0"
+                           VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
 
         <Frame x:Name="MainFrame"
                Grid.Row="1"
+               Margin="20"
                NavigationUIVisibility="Hidden"/>
+
+        <Border x:Name="SideMenuPanel"
+                Grid.RowSpan="2"
+                Width="220"
+                Background="White"
+                BorderBrush="#FFD9D9D9"
+                BorderThickness="0,0,1,0"
+                HorizontalAlignment="Left"
+                RenderTransformOrigin="0,0"
+                Visibility="Collapsed">
+            <Border.RenderTransform>
+                <TranslateTransform x:Name="SideMenuTranslateTransform" X="-220"/>
+            </Border.RenderTransform>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border BorderBrush="#FFE0E0E0"
+                        BorderThickness="0,0,0,1">
+                    <Grid Margin="20,0">
+                        <Button Content="☰"
+                                Width="42"
+                                Height="42"
+                                FontSize="20"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Click="MenuToggleButton_Click"/>
+
+                        <TextBlock Text="페이지"
+                                   FontSize="18"
+                                   FontWeight="Bold"
+                                   Margin="58,0,0,0"
+                                   VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+
+                <StackPanel Grid.Row="1"
+                            Margin="12">
+                    <Button Content="홈 화면"
+                            Height="44"
+                            Margin="0,0,0,8"
+                            Click="HomeButton_Click"/>
+                    <Button Content="영상 분석 화면"
+                            Height="44"
+                            Margin="0,0,0,8"
+                            Click="VideoAnalysisButton_Click"/>
+                    <Button Content="키워드 관리 화면"
+                            Height="44"
+                            Margin="0,0,0,8"
+                            Click="KeywordManageButton_Click"/>
+                    <Button Content="보고서 화면"
+                            Height="44"
+                            Margin="0,0,0,8"
+                            Click="ReportButton_Click"/>
+                    <Button Content="설정 화면"
+                            Height="44"
+                            Click="SettingsButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </Window>
