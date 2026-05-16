@@ -10,5 +10,6 @@
         <TextBox Text="Hello, World!"/>
         <TextBlock>asdfghjkl</TextBlock>
         <TextBlock>qweryuiop</TextBlock>
+        <TextBlock>1234567890</TextBlock>
     </StackPanel>
 </Window>
