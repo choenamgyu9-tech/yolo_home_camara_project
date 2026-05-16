@@ -1,9 +1,6 @@
-using System;
 using System.Windows;
-using System.Windows.Media.Animation;
-using yolo_home_camera_project.Views;
 
-namespace yolo_home_camera_project
+namespace yolo_home_camera_project.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
