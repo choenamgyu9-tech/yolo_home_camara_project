@@ -3,16 +3,38 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:local="clr-namespace:yolo_home_camera_project.Views"
       mc:Ignorable="d"
-      d:DesignHeight="450"
-      d:DesignWidth="800"
-      Title="SettingsPage">
-    <Grid>
-        <TextBlock Text="설정 화면"
-                   FontSize="28"
-                   FontWeight="Bold"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
+      d:DesignHeight="650"
+      d:DesignWidth="1000"
+      Title="SettingsPage"
+      Background="#FFF7F7F7">
+    <Grid Margin="12">
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+        <TextBlock Text="Settings" FontSize="28" FontWeight="Bold"/>
+        <Grid Grid.Row="1" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="220"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+            <Border Margin="0,0,12,0" Background="White" BorderBrush="#FFD9D9D9" BorderThickness="1" CornerRadius="6" Padding="16">
+                <StackPanel>
+                    <Button Content="비디오 설정" Height="42" Margin="0,0,0,10"/>
+                    <Button Content="키워드 설정" Height="42" Margin="0,0,0,10"/>
+                    <Button Content="타임라인 설정" Height="42" Margin="0,0,0,10"/>
+                    <Button Content="보고서 설정" Height="42"/>
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="1" Background="White" BorderBrush="#FFD9D9D9" BorderThickness="1" CornerRadius="6" Padding="18">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="설정내용 1" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <TextBox Text="영상 저장 경로" Height="36" Margin="0,0,0,18"/>
+                        <TextBlock Text="설정내용 2" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <TextBox Text="스냅샷 저장 경로" Height="36" Margin="0,0,0,18"/>
+                        <TextBlock Text="설정내용 3" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <TextBox Text="보고서 저장 경로" Height="36" Margin="0,0,0,18"/>
+                        <TextBlock Text="최소 신뢰도 설정" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <Slider Minimum="0" Maximum="100" Value="70"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
     </Grid>
 </Page>

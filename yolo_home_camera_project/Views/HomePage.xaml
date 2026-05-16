@@ -3,16 +3,47 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:local="clr-namespace:yolo_home_camera_project.Views"
       mc:Ignorable="d"
-      d:DesignHeight="450"
-      d:DesignWidth="800"
-      Title="HomePage">
-    <Grid>
-        <TextBlock Text="홈 화면"
-                   FontSize="28"
-                   FontWeight="Bold"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
+      d:DesignHeight="650"
+      d:DesignWidth="1000"
+      Title="HomePage"
+      Background="#FFF7F7F7">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Home" FontSize="28" FontWeight="Bold"/>
+        <UniformGrid Grid.Row="1" Columns="3" Margin="0,20,0,20">
+            <Border Margin="0,0,12,0" Background="White" BorderBrush="#FFD9D9D9" BorderThickness="1" CornerRadius="6" Padding="18">
+                <StackPanel><TextBlock Text="오늘 감지된 이벤트 수" Foreground="#FF666666"/><TextBlock Text="5개" FontSize="28" FontWeight="Bold" Margin="0,10,0,0"/></StackPanel>
+            </Border>
+            <Border Margin="0,0,12,0" Background="White" BorderBrush="#FFD9D9D9" BorderThickness="1" CornerRadius="6" Padding="18">
+                <StackPanel><TextBlock Text="오늘 분석한 영상 수" Foreground="#FF666666"/><TextBlock Text="5개" FontSize="28" FontWeight="Bold" Margin="0,10,0,0"/></StackPanel>
+            </Border>
+            <Border Background="White" BorderBrush="#FFD9D9D9" BorderThickness="1" CornerRadius="6" Padding="18">
+                <StackPanel><TextBlock Text="최근 분석 바로가기" Foreground="#FF666666"/><TextBlock Text="5개" FontSize="28" FontWeight="Bold" Margin="0,10,0,0"/></StackPanel>
+            </Border>
+        </UniformGrid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+            <Border Margin="0,0,12,0" Background="White" BorderBrush="#FFD9D9D9" BorderThickness="1" CornerRadius="6" Padding="18">
+                <StackPanel>
+                    <TextBlock Text="최근 감지 이벤트" FontSize="18" FontWeight="Bold" Margin="0,0,0,14"/>
+                    <TextBlock Text="00:13  cat 감지" Margin="0,0,0,10"/>
+                    <TextBlock Text="00:47  person 감지" Margin="0,0,0,10"/>
+                    <TextBlock Text="01:21  fire 감지"/>
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="1" Background="White" BorderBrush="#FFD9D9D9" BorderThickness="1" CornerRadius="6" Padding="18">
+                <StackPanel>
+                    <TextBlock Text="최근 보고서" FontSize="18" FontWeight="Bold" Margin="0,0,0,14"/>
+                    <TextBlock Text="보고서 1 (3/12)" Margin="0,0,0,10"/>
+                    <TextBlock Text="보고서 2 (3/13)" Margin="0,0,0,10"/>
+                    <TextBlock Text="보고서 3 (3/14)"/>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </Page>
