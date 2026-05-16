@@ -3,16 +3,33 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:local="clr-namespace:yolo_home_camera_project.Views"
       mc:Ignorable="d"
-      d:DesignHeight="450"
-      d:DesignWidth="800"
-      Title="KeywordManagePage">
-    <Grid>
-        <TextBlock Text="키워드 관리 화면"
-                   FontSize="28"
-                   FontWeight="Bold"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
+      d:DesignHeight="650"
+      d:DesignWidth="1000"
+      Title="KeywordManagePage"
+      Background="#FFF7F7F7">
+    <Grid Margin="12">
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+        <TextBlock Text="Keyword Manage" FontSize="28" FontWeight="Bold"/>
+        <Grid Grid.Row="1" Margin="0,20,0,12">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+            <ComboBox SelectedIndex="0" Height="36"><ComboBoxItem Content="정렬"/></ComboBox>
+            <TextBox Grid.Column="1" Margin="12,0,0,0" Height="36" Text="키워드 검색"/>
+        </Grid>
+        <Border Grid.Row="2" Background="White" BorderBrush="#FFD9D9D9" BorderThickness="1" CornerRadius="6" Padding="18">
+            <Grid>
+                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="120"/></Grid.ColumnDefinitions><TextBlock Text="키워드명" FontWeight="Bold"/><TextBlock Grid.Column="1" Text="활성 여부" FontWeight="Bold"/></Grid>
+                <StackPanel Grid.Row="1" Margin="0,14,0,0">
+                    <Grid Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="120"/></Grid.ColumnDefinitions><TextBlock Text="dog"/><CheckBox Grid.Column="1" IsChecked="True"/></Grid>
+                    <Grid Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="120"/></Grid.ColumnDefinitions><TextBlock Text="cat"/><CheckBox Grid.Column="1" IsChecked="True"/></Grid>
+                    <Grid Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="120"/></Grid.ColumnDefinitions><TextBlock Text="bird"/><CheckBox Grid.Column="1" IsChecked="True"/></Grid>
+                    <Grid Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="120"/></Grid.ColumnDefinitions><TextBlock Text="fire"/><CheckBox Grid.Column="1" IsChecked="True"/></Grid>
+                    <Grid Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="120"/></Grid.ColumnDefinitions><TextBlock Text="person"/><CheckBox Grid.Column="1" IsChecked="True"/></Grid>
+                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="120"/></Grid.ColumnDefinitions><TextBlock Text="refrigerator"/><CheckBox Grid.Column="1"/></Grid>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <TextBlock Grid.Row="3" Text="6개 / 80개" HorizontalAlignment="Right" Margin="0,12,0,0"/>
     </Grid>
 </Page>

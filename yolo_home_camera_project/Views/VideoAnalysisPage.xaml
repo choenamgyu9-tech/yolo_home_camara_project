@@ -3,16 +3,57 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:local="clr-namespace:yolo_home_camera_project.Views"
       mc:Ignorable="d"
-      d:DesignHeight="450"
-      d:DesignWidth="800"
-      Title="VideoAnalysisPage">
-    <Grid>
-        <TextBlock Text="영상 분석 화면"
-                   FontSize="28"
-                   FontWeight="Bold"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
+      d:DesignHeight="650"
+      d:DesignWidth="1000"
+      Title="VideoAnalysisPage"
+      Background="#FFF7F7F7">
+    <Grid Margin="12">
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+        <TextBlock Text="Video Analysis" FontSize="28" FontWeight="Bold"/>
+        <Grid Grid.Row="1" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="1.1*"/></Grid.ColumnDefinitions>
+            <Grid Margin="0,0,12,0">
+                <Grid.RowDefinitions><RowDefinition Height="2.3*"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                <Border Background="#FF202124" CornerRadius="6"><TextBlock Text="동영상" Foreground="White" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                <Border Grid.Row="1" Margin="0,12,0,12" Background="White" BorderBrush="#FFD9D9D9" BorderThickness="1" CornerRadius="6" Padding="16">
+                    <StackPanel><TextBlock Text="타임라인" FontWeight="Bold" Margin="0,0,0,10"/><ProgressBar Height="14" Value="62"/></StackPanel>
+                </Border>
+                <Border Grid.Row="2" Background="White" BorderBrush="#FFD9D9D9" BorderThickness="1" CornerRadius="6" Padding="16">
+                    <StackPanel>
+                        <TextBlock Text="분석 상태" FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
+                        <TextBlock Text="분석 상태: 분석 중" Margin="0,0,0,8"/>
+                        <TextBlock Text="현재 영상 길이: 03:25" Margin="0,0,0,8"/>
+                        <TextBlock Text="분석 진행률: 62%" Margin="0,0,0,8"/>
+                        <TextBlock Text="감지된 이벤트 수: 12개"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                <Border Background="White" BorderBrush="#FFD9D9D9" BorderThickness="1" CornerRadius="6" Padding="16" Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock Text="동영상 목록" FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
+                        <TextBlock Text="sample_01.mp4" Margin="0,0,0,8"/>
+                        <TextBlock Text="sample_02.mp4" Margin="0,0,0,8"/>
+                        <TextBlock Text="sample_03.mp4"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Row="1" Background="White" BorderBrush="#FFD9D9D9" BorderThickness="1" CornerRadius="6" Padding="16">
+                    <Grid>
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                        <TextBlock Text="감지된 객체" FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
+                        <Grid Grid.Row="1">
+                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <TextBlock Text="시작" FontWeight="Bold"/><TextBlock Grid.Column="1" Text="종료" FontWeight="Bold"/><TextBlock Grid.Column="2" Text="객체" FontWeight="Bold"/><TextBlock Grid.Column="3" Text="신뢰도" FontWeight="Bold"/>
+                            <TextBlock Grid.Row="1" Text="00:13" Margin="0,10,0,0"/><TextBlock Grid.Row="1" Grid.Column="1" Text="00:18" Margin="0,10,0,0"/><TextBlock Grid.Row="1" Grid.Column="2" Text="cat" Margin="0,10,0,0"/><TextBlock Grid.Row="1" Grid.Column="3" Text="87%" Margin="0,10,0,0"/>
+                            <TextBlock Grid.Row="2" Text="00:47" Margin="0,10,0,0"/><TextBlock Grid.Row="2" Grid.Column="1" Text="00:55" Margin="0,10,0,0"/><TextBlock Grid.Row="2" Grid.Column="2" Text="person" Margin="0,10,0,0"/><TextBlock Grid.Row="2" Grid.Column="3" Text="91%" Margin="0,10,0,0"/>
+                            <TextBlock Grid.Row="3" Text="01:21" Margin="0,10,0,0"/><TextBlock Grid.Row="3" Grid.Column="1" Text="01:23" Margin="0,10,0,0"/><TextBlock Grid.Row="3" Grid.Column="2" Text="fire" Margin="0,10,0,0"/><TextBlock Grid.Row="3" Grid.Column="3" Text="76%" Margin="0,10,0,0"/>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
     </Grid>
 </Page>
