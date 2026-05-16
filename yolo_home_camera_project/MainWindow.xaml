@@ -1,15 +1,26 @@
-﻿<Window x:Class="yolo_home_camera_project.MainWindow"
+<Window x:Class="yolo_home_camera_project.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:yolo_home_camera_project"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <StackPanel>
-        <TextBox Text="Hello, World!"/>
-        <TextBlock>asdfghjkl</TextBlock>
-        <TextBlock>qweryuiop</TextBlock>
-        <TextBlock>1234567890</TextBlock>
-    </StackPanel>
+        Title="YOLO Home Camera" Height="450" Width="800">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+            <Button Content="영상 분석 화면" Width="130" Height="40" Margin="0,0,10,0" Click="VideoAnalysisButton_Click"/>
+            <Button Content="키워드 관리 화면" Width="130" Height="40" Margin="0,0,10,0" Click="KeywordManageButton_Click"/>
+            <Button Content="보고서 화면" Width="130" Height="40" Margin="0,0,10,0" Click="ReportButton_Click"/>
+            <Button Content="설정 화면" Width="130" Height="40" Click="SettingsButton_Click"/>
+        </StackPanel>
+
+        <Frame x:Name="MainFrame"
+               Grid.Row="1"
+               NavigationUIVisibility="Hidden"/>
+    </Grid>
 </Window>
