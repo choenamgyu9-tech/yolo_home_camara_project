@@ -12,7 +12,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
-        </Grid.RowDefinitions> 
+        </Grid.RowDefinitions>
 
         <Border Background="White"
                 BorderBrush="#FFE0E0E0"
