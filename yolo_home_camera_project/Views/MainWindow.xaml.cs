@@ -1,4 +1,6 @@
+using System;
 using System.Windows;
+using System.Windows.Media.Animation;
 
 namespace yolo_home_camera_project.Views
 {
