@@ -16,7 +16,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="folder_icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="ViewModels\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="folder_icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

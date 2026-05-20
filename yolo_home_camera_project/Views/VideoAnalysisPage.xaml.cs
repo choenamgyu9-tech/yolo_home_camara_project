@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -18,6 +19,8 @@ namespace yolo_home_camera_project.Views
 
         private readonly DispatcherTimer _playbackTimer;
         private readonly ObservableCollection<VideoListItem> _videos = [];
+        private VideoSortMode _sortMode = VideoSortMode.Name;
+        private bool _sortAscending = true;
         private bool _isDraggingPosition;
 
         public VideoAnalysisPage()
@@ -32,6 +35,7 @@ namespace yolo_home_camera_project.Views
             _playbackTimer.Tick += PlaybackTimer_Tick;
 
             LoadVideoList();
+            UpdateSortMarks();
         }
 
         private void OpenVideoButton_Click(object sender, RoutedEventArgs e)
@@ -70,15 +74,34 @@ namespace yolo_home_camera_project.Views
                 return;
             }
 
-            IEnumerable<FileInfo> videoFiles = videosFolder
+            IEnumerable<FileInfo> videoFiles = ApplyVideoSort(videosFolder
                 .EnumerateFiles()
-                .Where(file => IsVideoFile(file.FullName))
-                .OrderBy(file => file.Name);
+                .Where(file => IsVideoFile(file.FullName)));
 
             foreach (FileInfo file in videoFiles)
             {
-                _videos.Add(new VideoListItem(Path.GetFileNameWithoutExtension(file.Name), file.FullName));
+                _videos.Add(new VideoListItem(
+                    Path.GetFileNameWithoutExtension(file.Name),
+                    file.FullName,
+                    file.CreationTime,
+                    file.LastWriteTime));
             }
+        }
+
+        private IEnumerable<FileInfo> ApplyVideoSort(IEnumerable<FileInfo> files)
+        {
+            return _sortMode switch
+            {
+                VideoSortMode.AddedDate => _sortAscending
+                    ? files.OrderBy(file => file.LastWriteTime).ThenBy(file => file.Name)
+                    : files.OrderByDescending(file => file.LastWriteTime).ThenBy(file => file.Name),
+                VideoSortMode.CreatedDate => _sortAscending
+                    ? files.OrderBy(file => file.CreationTime).ThenBy(file => file.Name)
+                    : files.OrderByDescending(file => file.CreationTime).ThenBy(file => file.Name),
+                _ => _sortAscending
+                    ? files.OrderBy(file => file.Name)
+                    : files.OrderByDescending(file => file.Name)
+            };
         }
 
         private static DirectoryInfo? FindVideosFolder()
@@ -111,6 +134,78 @@ namespace yolo_home_camera_project.Views
             {
                 LoadVideo(selectedVideo.FilePath);
             }
+        }
+
+        private void OpenVideosFolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            DirectoryInfo videosFolder = FindVideosFolder() ?? CreateVideosFolder();
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = videosFolder.FullName,
+                UseShellExecute = true
+            });
+        }
+
+        private void ToggleSortPanelButton_Click(object sender, RoutedEventArgs e)
+        {
+            SortPopup.IsOpen = !SortPopup.IsOpen;
+        }
+
+        private void SortByNameButton_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeSort(VideoSortMode.Name);
+        }
+
+        private void SortByCreatedButton_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeSort(VideoSortMode.AddedDate);
+        }
+
+        private void SortByAddedButton_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeSort(VideoSortMode.CreatedDate);
+        }
+
+        private void SortAscendingButton_Click(object sender, RoutedEventArgs e)
+        {
+            _sortAscending = true;
+            LoadVideoList();
+            UpdateSortMarks();
+            SortPopup.IsOpen = false;
+        }
+
+        private void SortDescendingButton_Click(object sender, RoutedEventArgs e)
+        {
+            _sortAscending = false;
+            LoadVideoList();
+            UpdateSortMarks();
+            SortPopup.IsOpen = false;
+        }
+
+        private void ChangeSort(VideoSortMode sortMode)
+        {
+            _sortMode = sortMode;
+            LoadVideoList();
+            UpdateSortMarks();
+            SortPopup.IsOpen = false;
+        }
+
+        private void UpdateSortMarks()
+        {
+            const string selectedMark = "\u2022";
+
+            NameSortMark.Text = _sortMode == VideoSortMode.Name ? selectedMark : string.Empty;
+            CreatedSortMark.Text = _sortMode == VideoSortMode.AddedDate ? selectedMark : string.Empty;
+            AddedSortMark.Text = _sortMode == VideoSortMode.CreatedDate ? selectedMark : string.Empty;
+            AscendingSortMark.Text = _sortAscending ? selectedMark : string.Empty;
+            DescendingSortMark.Text = _sortAscending ? string.Empty : selectedMark;
+        }
+
+        private static DirectoryInfo CreateVideosFolder()
+        {
+            DirectoryInfo folder = new(Path.Combine(AppContext.BaseDirectory, "Videos"));
+            folder.Create();
+            return folder;
         }
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
@@ -189,9 +284,34 @@ namespace yolo_home_camera_project.Views
                 return;
             }
 
-            LoadVideo(fileName);
+            string videoToPlay = AddDroppedVideoToFolder(fileName);
+            LoadVideo(videoToPlay);
             e.Effects = DragDropEffects.Copy;
             e.Handled = true;
+        }
+
+        private string AddDroppedVideoToFolder(string sourceFileName)
+        {
+            DirectoryInfo videosFolder = FindVideosFolder() ?? CreateVideosFolder();
+            string targetFileName = Path.Combine(videosFolder.FullName, Path.GetFileName(sourceFileName));
+
+            if (!File.Exists(targetFileName) && !IsSamePath(sourceFileName, targetFileName))
+            {
+                File.Copy(sourceFileName, targetFileName);
+            }
+
+            LoadVideoList();
+            SelectVideoInList(targetFileName);
+            return targetFileName;
+        }
+
+        private void SelectVideoInList(string fileName)
+        {
+            VideoListItem? video = _videos.FirstOrDefault(item => IsSamePath(item.FilePath, fileName));
+            if (video is not null)
+            {
+                VideoListBox.SelectedItem = video;
+            }
         }
 
         private void UpdateDragState(object sender, DragEventArgs e)
@@ -233,6 +353,13 @@ namespace yolo_home_camera_project.Views
             string extension = Path.GetExtension(fileName);
             return VideoExtensions.Any(videoExtension =>
                 videoExtension.Equals(extension, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static bool IsSamePath(string firstPath, string secondPath)
+        {
+            return Path.GetFullPath(firstPath).Equals(
+                Path.GetFullPath(secondPath),
+                StringComparison.OrdinalIgnoreCase);
         }
 
         private void PlaybackTimer_Tick(object? sender, EventArgs e)
@@ -292,6 +419,17 @@ namespace yolo_home_camera_project.Views
                 : time.ToString(@"mm\:ss");
         }
 
-        private sealed record VideoListItem(string Title, string FilePath);
+        private enum VideoSortMode
+        {
+            Name,
+            AddedDate,
+            CreatedDate
+        }
+
+        private sealed record VideoListItem(
+            string Title,
+            string FilePath,
+            DateTime CreatedDate,
+            DateTime AddedDate);
     }
 }
