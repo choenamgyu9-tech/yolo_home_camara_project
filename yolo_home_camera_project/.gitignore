@@ -1,0 +1,10 @@
+# AI model / weight files
+*.pt
+*.pth
+*.onnx
+*.ts
+*.engine
+*.weights
+
+# generated snapshots
+yolo_home_camera_project/Assets/Snapshots/
