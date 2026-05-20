@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -11,18 +14,24 @@ namespace yolo_home_camera_project.Views
 {
     public partial class VideoAnalysisPage : Page
     {
+        private static readonly string[] VideoExtensions = [".mp4", ".avi", ".mov", ".mkv"];
+
         private readonly DispatcherTimer _playbackTimer;
+        private readonly ObservableCollection<VideoListItem> _videos = [];
         private bool _isDraggingPosition;
 
         public VideoAnalysisPage()
         {
             InitializeComponent();
+            VideoListBox.ItemsSource = _videos;
 
             _playbackTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromMilliseconds(300)
             };
             _playbackTimer.Tick += PlaybackTimer_Tick;
+
+            LoadVideoList();
         }
 
         private void OpenVideoButton_Click(object sender, RoutedEventArgs e)
@@ -49,6 +58,59 @@ namespace yolo_home_camera_project.Views
             SelectedVideoText.Text = $"Selected video: {Path.GetFileName(fileName)}";
             VideoPlayer.Play();
             _playbackTimer.Start();
+        }
+
+        private void LoadVideoList()
+        {
+            _videos.Clear();
+
+            DirectoryInfo? videosFolder = FindVideosFolder();
+            if (videosFolder is null || !videosFolder.Exists)
+            {
+                return;
+            }
+
+            IEnumerable<FileInfo> videoFiles = videosFolder
+                .EnumerateFiles()
+                .Where(file => IsVideoFile(file.FullName))
+                .OrderBy(file => file.Name);
+
+            foreach (FileInfo file in videoFiles)
+            {
+                _videos.Add(new VideoListItem(Path.GetFileNameWithoutExtension(file.Name), file.FullName));
+            }
+        }
+
+        private static DirectoryInfo? FindVideosFolder()
+        {
+            DirectoryInfo? current = new(AppContext.BaseDirectory);
+
+            while (current is not null)
+            {
+                DirectoryInfo candidate = new(Path.Combine(current.FullName, "Videos"));
+                if (candidate.Exists)
+                {
+                    return candidate;
+                }
+
+                DirectoryInfo projectCandidate = new(Path.Combine(current.FullName, "yolo_home_camera_project", "Videos"));
+                if (projectCandidate.Exists)
+                {
+                    return projectCandidate;
+                }
+
+                current = current.Parent;
+            }
+
+            return null;
+        }
+
+        private void VideoListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (VideoListBox.SelectedItem is VideoListItem selectedVideo)
+            {
+                LoadVideo(selectedVideo.FilePath);
+            }
         }
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
@@ -161,13 +223,16 @@ namespace yolo_home_camera_project.Views
             }
 
             string fileName = files[0];
-            string extension = Path.GetExtension(fileName);
-            return extension.Equals(".mp4", StringComparison.OrdinalIgnoreCase) ||
-                   extension.Equals(".avi", StringComparison.OrdinalIgnoreCase) ||
-                   extension.Equals(".mov", StringComparison.OrdinalIgnoreCase) ||
-                   extension.Equals(".mkv", StringComparison.OrdinalIgnoreCase)
+            return IsVideoFile(fileName)
                 ? fileName
                 : null;
+        }
+
+        private static bool IsVideoFile(string fileName)
+        {
+            string extension = Path.GetExtension(fileName);
+            return VideoExtensions.Any(videoExtension =>
+                videoExtension.Equals(extension, StringComparison.OrdinalIgnoreCase));
         }
 
         private void PlaybackTimer_Tick(object? sender, EventArgs e)
@@ -226,5 +291,7 @@ namespace yolo_home_camera_project.Views
                 ? time.ToString(@"hh\:mm\:ss")
                 : time.ToString(@"mm\:ss");
         }
+
+        private sealed record VideoListItem(string Title, string FilePath);
     }
 }

@@ -134,12 +134,17 @@
                 </Grid.RowDefinitions>
 
                 <Border Background="White" BorderBrush="#FFD9D9D9" BorderThickness="1" CornerRadius="6" Padding="16" Margin="0,0,0,12">
-                    <StackPanel>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
                         <TextBlock Text="Video List" FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
-                        <TextBlock Text="sample_01.mp4" Margin="0,0,0,8"/>
-                        <TextBlock Text="sample_02.mp4" Margin="0,0,0,8"/>
-                        <TextBlock Text="sample_03.mp4"/>
-                    </StackPanel>
+                        <ListBox x:Name="VideoListBox"
+                                 Grid.Row="1"
+                                 DisplayMemberPath="Title"
+                                 SelectionChanged="VideoListBox_SelectionChanged"/>
+                    </Grid>
                 </Border>
 
                 <Border Grid.Row="1" Background="White" BorderBrush="#FFD9D9D9" BorderThickness="1" CornerRadius="6" Padding="16">
