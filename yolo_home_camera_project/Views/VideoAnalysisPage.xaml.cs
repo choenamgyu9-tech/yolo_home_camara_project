@@ -22,11 +22,13 @@ namespace yolo_home_camera_project.Views
         private VideoSortMode _sortMode = VideoSortMode.Name;
         private bool _sortAscending = true;
         private bool _isDraggingPosition;
+        private bool _isPlaying;
 
         public VideoAnalysisPage()
         {
             InitializeComponent();
             VideoListBox.ItemsSource = _videos;
+            Loaded += (_, _) => Focus();
 
             _playbackTimer = new DispatcherTimer
             {
@@ -58,10 +60,12 @@ namespace yolo_home_camera_project.Views
         {
             VideoPlayer.Stop();
             VideoPlayer.Source = new Uri(fileName);
+            ApplyPlaybackSpeed();
             EmptyVideoText.Visibility = Visibility.Collapsed;
             SelectedVideoText.Text = $"Selected video: {Path.GetFileName(fileName)}";
             VideoPlayer.Play();
             _playbackTimer.Start();
+            SetPlaybackState(true);
         }
 
         private void LoadVideoList()
@@ -208,22 +212,30 @@ namespace yolo_home_camera_project.Views
             return folder;
         }
 
-        private void PlayButton_Click(object sender, RoutedEventArgs e)
+        private void PlayPauseButton_Click(object sender, RoutedEventArgs e)
+        {
+            TogglePlayPause();
+        }
+
+        private void TogglePlayPause()
         {
             if (VideoPlayer.Source is null)
             {
-                OpenVideoButton_Click(sender, e);
+                EmptyVideoText.Visibility = Visibility.Visible;
+                return;
+            }
+
+            if (_isPlaying)
+            {
+                VideoPlayer.Pause();
+                SetPlaybackState(false);
                 return;
             }
 
             VideoPlayer.Play();
             _playbackTimer.Start();
             EmptyVideoText.Visibility = Visibility.Collapsed;
-        }
-
-        private void PauseButton_Click(object sender, RoutedEventArgs e)
-        {
-            VideoPlayer.Pause();
+            SetPlaybackState(true);
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
@@ -231,10 +243,27 @@ namespace yolo_home_camera_project.Views
             VideoPlayer.Stop();
             PositionSlider.Value = 0;
             UpdatePlaybackTime();
+            SetPlaybackState(false);
+        }
+
+        private void PlaybackSpeedComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ApplyPlaybackSpeed();
+        }
+
+        private void ApplyPlaybackSpeed()
+        {
+            if (PlaybackSpeedComboBox?.SelectedItem is ComboBoxItem item &&
+                double.TryParse(item.Tag?.ToString(), out double speed))
+            {
+                VideoPlayer.SpeedRatio = speed;
+            }
         }
 
         private void VideoPlayer_MediaOpened(object sender, RoutedEventArgs e)
         {
+            ApplyPlaybackSpeed();
+
             if (VideoPlayer.NaturalDuration.HasTimeSpan)
             {
                 PositionSlider.Maximum = VideoPlayer.NaturalDuration.TimeSpan.TotalSeconds;
@@ -249,12 +278,66 @@ namespace yolo_home_camera_project.Views
             PositionSlider.Value = 0;
             VideoPlayer.Stop();
             UpdatePlaybackTime();
+            SetPlaybackState(false);
         }
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
             _playbackTimer.Stop();
             VideoPlayer.Stop();
+            SetPlaybackState(false);
+        }
+
+        private void Page_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+            {
+                TogglePlayPause();
+                e.Handled = true;
+                return;
+            }
+
+            if (e.Key == Key.Right)
+            {
+                SeekBy(TimeSpan.FromSeconds(5));
+                e.Handled = true;
+                return;
+            }
+
+            if (e.Key == Key.Left)
+            {
+                SeekBy(TimeSpan.FromSeconds(-5));
+                e.Handled = true;
+            }
+        }
+
+        private void SeekBy(TimeSpan offset)
+        {
+            if (VideoPlayer.Source is null)
+            {
+                return;
+            }
+
+            TimeSpan target = VideoPlayer.Position + offset;
+            if (target < TimeSpan.Zero)
+            {
+                target = TimeSpan.Zero;
+            }
+
+            if (VideoPlayer.NaturalDuration.HasTimeSpan && target > VideoPlayer.NaturalDuration.TimeSpan)
+            {
+                target = VideoPlayer.NaturalDuration.TimeSpan;
+            }
+
+            VideoPlayer.Position = target;
+            PositionSlider.Value = target.TotalSeconds;
+            UpdatePlaybackTime();
+        }
+
+        private void SetPlaybackState(bool isPlaying)
+        {
+            _isPlaying = isPlaying;
+            PlayPauseButton.Content = isPlaying ? "\u275A\u275A" : "\u25B6";
         }
 
         private void VideoDropArea_DragEnter(object sender, DragEventArgs e)

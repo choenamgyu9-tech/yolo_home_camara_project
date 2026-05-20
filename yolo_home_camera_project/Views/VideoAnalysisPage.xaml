@@ -3,10 +3,12 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Background="#FFF7F7F7"
       AllowDrop="True"
+      Focusable="True"
       PreviewDragEnter="VideoDropArea_DragEnter"
       PreviewDragOver="VideoDropArea_DragOver"
       PreviewDragLeave="VideoDropArea_DragLeave"
       PreviewDrop="VideoDropArea_Drop"
+      PreviewKeyDown="Page_PreviewKeyDown"
       Unloaded="Page_Unloaded">
     <Grid Margin="12">
         <Grid.RowDefinitions>
@@ -76,28 +78,34 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <Button Content="Open"
-                                Width="92"
+                        <Button x:Name="PlayPauseButton"
+                                Content="&#x25B6;"
+                                Width="42"
                                 Height="34"
-                                Click="OpenVideoButton_Click"/>
+                                FontSize="16"
+                                ToolTip="Play/Pause"
+                                Click="PlayPauseButton_Click"/>
                         <Button Grid.Column="1"
-                                Content="Play"
-                                Width="64"
+                                Content="&#x25A0;"
+                                Width="42"
                                 Height="34"
+                                FontSize="16"
                                 Margin="8,0,0,0"
-                                Click="PlayButton_Click"/>
-                        <Button Grid.Column="2"
-                                Content="Pause"
-                                Width="76"
-                                Height="34"
-                                Margin="8,0,0,0"
-                                Click="PauseButton_Click"/>
-                        <Button Grid.Column="4"
-                                Content="Stop"
-                                Width="64"
-                                Height="34"
-                                Margin="8,0,0,0"
+                                ToolTip="Stop"
                                 Click="StopButton_Click"/>
+                        <ComboBox x:Name="PlaybackSpeedComboBox"
+                                  Grid.Column="4"
+                                  Width="92"
+                                  Height="34"
+                                  SelectedIndex="2"
+                                  SelectionChanged="PlaybackSpeedComboBox_SelectionChanged">
+                            <ComboBoxItem Content="0.5x" Tag="0.5"/>
+                            <ComboBoxItem Content="0.75x" Tag="0.75"/>
+                            <ComboBoxItem Content="1x" Tag="1"/>
+                            <ComboBoxItem Content="1.25x" Tag="1.25"/>
+                            <ComboBoxItem Content="1.5x" Tag="1.5"/>
+                            <ComboBoxItem Content="2x" Tag="2"/>
+                        </ComboBox>
 
                         <Slider x:Name="PositionSlider"
                                 Grid.Row="1"
