@@ -1,15 +1,14 @@
-using System;
-using System.Collections.Generic;
+using Microsoft.Win32;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Microsoft.Win32;
+using yolo_home_camera_project.Models;
+using yolo_home_camera_project.Services;
 
 namespace yolo_home_camera_project.Views
 {
@@ -24,11 +23,19 @@ namespace yolo_home_camera_project.Views
         private bool _isDraggingPosition;
         private bool _isPlaying;
 
+        private readonly PythonYoloService _pythonYoloService = new();
+        private readonly KeywordService _keywordService = new();
+        private readonly ObservableCollection<TimelineEvent> _timelineEvents = [];
+        private string? _selectedVideoPath;
+
         public VideoAnalysisPage()
         {
             InitializeComponent();
+
             VideoListBox.ItemsSource = _videos;
-            Loaded += (_, _) => Focus();
+            TimelineDataGrid.ItemsSource = _timelineEvents;
+
+            Loaded += VideoAnalysisPage_Loaded;
 
             _playbackTimer = new DispatcherTimer
             {
@@ -38,6 +45,186 @@ namespace yolo_home_camera_project.Views
 
             LoadVideoList();
             UpdateSortMarks();
+        }
+
+        private async void VideoAnalysisPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            Focus();
+            await RefreshActiveKeywordsTextAsync();
+        }
+
+        private static List<TimelineEvent> BuildTimelineEvents(IEnumerable<YoloDetectionResult> detections, double maxGapSeconds)
+        {
+            List<YoloDetectionResult> ordered = detections
+                .OrderBy(d => d.Keyword)
+                .ThenBy(d => d.EventSeconds)
+                .ToList();
+
+            List<TimelineEvent> result = [];
+            TimelineEvent? current = null;
+
+            foreach (YoloDetectionResult detection in ordered)
+            {
+                if (current is null)
+                {
+                    current = CreateTimelineEvent(detection);
+                    continue;
+                }
+
+                bool sameKeyword = current.Keyword == detection.Keyword;
+                bool closeEnough = detection.EventSeconds - current.EndSeconds <= maxGapSeconds;
+
+                if (sameKeyword && closeEnough)
+                {
+                    current.EndSeconds = detection.EventSeconds;
+                    current.EndTime = FormatTime(TimeSpan.FromSeconds(detection.EventSeconds));
+                    current.DetectionCount++;
+
+                    if (detection.Confidence > current.MaxConfidence)
+                    {
+                        current.MaxConfidence = Math.Round(detection.Confidence, 4);
+                        current.SnapshotPath = detection.SnapshotPath;
+                    }
+                }
+                else
+                {
+                    result.Add(current);
+                    current = CreateTimelineEvent(detection);
+                }
+            }
+
+            if (current is not null)
+            {
+                result.Add(current);
+            }
+
+            return result
+                .OrderBy(item => item.StartSeconds)
+                .ToList();
+        }
+
+        private void TimelineDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (TimelineDataGrid.SelectedItem is not TimelineEvent selected)
+            {
+                return;
+            }
+
+            if (VideoPlayer.Source is null)
+            {
+                return;
+            }
+
+            TimeSpan target = TimeSpan.FromSeconds(selected.StartSeconds);
+
+            VideoPlayer.Position = target;
+            PositionSlider.Value = selected.StartSeconds;
+            UpdatePlaybackTime(target);
+
+            VideoPlayer.Play();
+            _playbackTimer.Start();
+            SetPlaybackState(true);
+        }
+
+        private static TimelineEvent CreateTimelineEvent(YoloDetectionResult detection)
+        {
+            return new TimelineEvent
+            {
+                Keyword = detection.Keyword,
+                StartSeconds = detection.EventSeconds,
+                EndSeconds = detection.EventSeconds,
+                StartTime = FormatTime(TimeSpan.FromSeconds(detection.EventSeconds)),
+                EndTime = FormatTime(TimeSpan.FromSeconds(detection.EventSeconds)),
+                MaxConfidence = Math.Round(detection.Confidence, 4),
+                DetectionCount = 1,
+                SnapshotPath = detection.SnapshotPath
+            };
+        }
+
+        private async Task RefreshActiveKeywordsTextAsync()
+        {
+            List<string> keywords = await _keywordService.LoadEnabledKeywordNamesAsync();
+
+            if (keywords.Count == 0)
+            {
+                ActiveKeywordsText.Text = "Active keywords: none";
+                return;
+            }
+
+            ActiveKeywordsText.Text = $"Active keywords: {string.Join(", ", keywords)}";
+        }
+
+        private async void AnalyzeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(_selectedVideoPath))
+            {
+                MessageBox.Show("먼저 분석할 동영상을 선택하거나 드래그하세요.");
+                return;
+            }
+
+            try
+            {
+                AnalyzeButton.IsEnabled = false;
+                AnalysisStatusText.Text = "Status: loading keywords...";
+                AnalysisProgressText.Text = "Progress: preparing";
+                AnalysisProgressBar.IsIndeterminate = true;
+                _timelineEvents.Clear();
+
+                List<string> keywords = await _keywordService.LoadEnabledKeywordNamesAsync();
+
+                if (keywords.Count == 0)
+                {
+                    MessageBox.Show("활성화된 탐색 키워드가 없습니다. Keyword Manage 페이지에서 키워드를 활성화하세요.");
+                    AnalysisStatusText.Text = "Status: no active keywords";
+                    return;
+                }
+
+                ActiveKeywordsText.Text = $"Active keywords: {string.Join(", ", keywords)}";
+
+                double confidence = double.TryParse(
+                    ConfidenceTextBox.Text,
+                    System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out double parsedConfidence)
+                    ? parsedConfidence
+                    : 0.5;
+
+                int vidStride = int.TryParse(VidStrideTextBox.Text, out int parsedStride)
+                    ? parsedStride
+                    : 5;
+
+                AnalysisStatusText.Text = "Status: YOLOE analyzing...";
+
+                List<YoloDetectionResult> detections = await _pythonYoloService.AnalyzeVideoAsync(
+                    _selectedVideoPath,
+                    keywords,
+                    confidence,
+                    vidStride);
+
+                List<TimelineEvent> timelineEvents = BuildTimelineEvents(
+                    detections,
+                    maxGapSeconds: 1.0);
+
+                foreach (TimelineEvent item in timelineEvents)
+                {
+                    _timelineEvents.Add(item);
+                }
+
+                AnalysisProgressBar.IsIndeterminate = false;
+                AnalysisProgressBar.Value = 100;
+                AnalysisProgressText.Text = "Progress: 100%";
+                AnalysisStatusText.Text = $"Status: complete, {_timelineEvents.Count} timeline events";
+            }
+            catch (Exception ex)
+            {
+                AnalysisProgressBar.IsIndeterminate = false;
+                AnalysisStatusText.Text = "Status: failed";
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                AnalyzeButton.IsEnabled = true;
+            }
         }
 
         private void OpenVideoButton_Click(object sender, RoutedEventArgs e)
@@ -58,6 +245,8 @@ namespace yolo_home_camera_project.Views
 
         private void LoadVideo(string fileName)
         {
+            _selectedVideoPath = fileName;
+
             VideoPlayer.Stop();
             VideoPlayer.Source = new Uri(fileName);
             ApplyPlaybackSpeed();
@@ -162,12 +351,12 @@ namespace yolo_home_camera_project.Views
 
         private void SortByCreatedButton_Click(object sender, RoutedEventArgs e)
         {
-            ChangeSort(VideoSortMode.AddedDate);
+            ChangeSort(VideoSortMode.CreatedDate);
         }
 
         private void SortByAddedButton_Click(object sender, RoutedEventArgs e)
         {
-            ChangeSort(VideoSortMode.CreatedDate);
+            ChangeSort(VideoSortMode.AddedDate);
         }
 
         private void SortAscendingButton_Click(object sender, RoutedEventArgs e)
@@ -199,8 +388,8 @@ namespace yolo_home_camera_project.Views
             const string selectedMark = "\u2022";
 
             NameSortMark.Text = _sortMode == VideoSortMode.Name ? selectedMark : string.Empty;
-            CreatedSortMark.Text = _sortMode == VideoSortMode.AddedDate ? selectedMark : string.Empty;
-            AddedSortMark.Text = _sortMode == VideoSortMode.CreatedDate ? selectedMark : string.Empty;
+            CreatedSortMark.Text = _sortMode == VideoSortMode.CreatedDate ? selectedMark : string.Empty;
+            AddedSortMark.Text = _sortMode == VideoSortMode.AddedDate ? selectedMark : string.Empty;
             AscendingSortMark.Text = _sortAscending ? selectedMark : string.Empty;
             DescendingSortMark.Text = _sortAscending ? string.Empty : selectedMark;
         }

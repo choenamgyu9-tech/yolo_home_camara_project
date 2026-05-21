@@ -1,1 +1,42 @@
-[]
+[
+  {
+    "Keyword": "person",
+    "isEnabled": true,
+    "threshold": 0.5
+  },
+  {
+    "Keyword": "dog",
+    "isEnabled": true,
+    "threshold": 0.5
+  },
+  {
+    "Keyword": "cat",
+    "isEnabled": true,
+    "threshold": 0.5
+  },
+  {
+    "Keyword": "car",
+    "isEnabled": true,
+    "threshold": 0.5
+  },
+  {
+    "Keyword": "package",
+    "isEnabled": true,
+    "threshold": 0.5
+  },
+  {
+    "Keyword": "smoke",
+    "isEnabled": true,
+    "threshold": 0.5
+  },
+  {
+    "Keyword": "fire",
+    "isEnabled": true,
+    "threshold": 0.5
+  },
+  {
+    "Keyword": "cellphone",
+    "isEnabled": true,
+    "threshold": 0.5
+  }
+]
