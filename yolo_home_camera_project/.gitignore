@@ -1,0 +1,14 @@
+# AI model / weight files
+*.pt
+*.pth
+*.onnx
+*.ts
+*.engine
+*.weights
+
+# generated snapshots
+**/Assets/Snapshots/
+**/Assets/Snapshots/*
+
+**/Assets/Videos/
+**/Assets/Videos/*
