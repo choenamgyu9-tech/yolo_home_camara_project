@@ -9,3 +9,6 @@
 # generated snapshots
 **/Assets/Snapshots/
 **/Assets/Snapshots/*
+
+**/Assets/Videos/
+**/Assets/Videos/*
