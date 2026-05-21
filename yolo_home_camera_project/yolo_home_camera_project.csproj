@@ -9,9 +9,35 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Assets\Snapshots\" />
-    <Folder Include="Assets\Videos\" />
+
+    <Compile Remove="Videos - 복사\**" />
+    <EmbeddedResource Remove="Videos - 복사\**" />
+    <None Remove="Videos - 복사\**" />
+    <Page Remove="Videos - 복사\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="folder_icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+
     <Folder Include="ViewModels\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="folder_icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Videos\레비%28졸업%29_Angry_5.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Videos\레비%28졸업%29_Happy_3.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
