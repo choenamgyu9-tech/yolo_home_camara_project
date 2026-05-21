@@ -7,4 +7,5 @@
 *.weights
 
 # generated snapshots
-yolo_home_camera_project/Assets/Snapshots/
+**/Assets/Snapshots/
+**/Assets/Snapshots/*
