@@ -368,17 +368,74 @@
                 </Border>
 
                 <Border Grid.Row="1" Background="White" BorderBrush="#FFD9D9D9" BorderThickness="1" CornerRadius="6" Padding="16">
-                    <DataGrid x:Name="TimelineDataGrid"
-          AutoGenerateColumns="False"
-          Height="180"
-          SelectionChanged="TimelineDataGrid_SelectionChanged">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="객체" Binding="{Binding Keyword}" Width="70"/>
-                            <DataGridTextColumn Header="등장" Binding="{Binding StartTime}" Width="70"/>
-                            <DataGridTextColumn Header="사라짐" Binding="{Binding EndTime}" Width="70"/>
-                            <DataGridTextColumn Header="신뢰도" Binding="{Binding MaxConfidence}" Width="70"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Detected Objects" FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
+
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <Border Background="#FFF8F9FB" BorderBrush="#FFE0E3E8" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="82"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Width="72" Height="40" Background="#FF2A2D32" CornerRadius="4" VerticalAlignment="Center"/>
+                                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                            <TextBlock Text="cat" FontSize="16" FontWeight="Bold"/>
+                                            <TextBlock Text="00:13 - 00:18" Foreground="#FF666666" Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                        <Border Grid.Column="2" Background="#FFEAF3FF" CornerRadius="4" Padding="8,4" VerticalAlignment="Center">
+                                            <TextBlock Text="87%" FontWeight="Bold" Foreground="#FF1B5FA7"/>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+
+                                <Border Background="#FFF8F9FB" BorderBrush="#FFE0E3E8" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="82"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Width="72" Height="40" Background="#FF2A2D32" CornerRadius="4" VerticalAlignment="Center"/>
+                                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                            <TextBlock Text="person" FontSize="16" FontWeight="Bold"/>
+                                            <TextBlock Text="00:47 - 00:55" Foreground="#FF666666" Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                        <Border Grid.Column="2" Background="#FFEAF3FF" CornerRadius="4" Padding="8,4" VerticalAlignment="Center">
+                                            <TextBlock Text="91%" FontWeight="Bold" Foreground="#FF1B5FA7"/>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+
+                                <Border Background="#FFF8F9FB" BorderBrush="#FFE0E3E8" BorderThickness="1" CornerRadius="6" Padding="12">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="82"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Width="72" Height="40" Background="#FF2A2D32" CornerRadius="4" VerticalAlignment="Center"/>
+                                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                            <TextBlock Text="fire" FontSize="16" FontWeight="Bold"/>
+                                            <TextBlock Text="01:21 - 01:23" Foreground="#FF666666" Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                        <Border Grid.Column="2" Background="#FFFFEFE8" CornerRadius="4" Padding="8,4" VerticalAlignment="Center">
+                                            <TextBlock Text="76%" FontWeight="Bold" Foreground="#FFC54A18"/>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+
                 </Border>
             </Grid>
         </Grid>
