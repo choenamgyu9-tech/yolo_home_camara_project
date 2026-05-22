@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+
     <Compile Remove="Videos - 복사\**" />
     <EmbeddedResource Remove="Videos - 복사\**" />
     <None Remove="Videos - 복사\**" />
@@ -20,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+
     <Folder Include="ViewModels\" />
   </ItemGroup>
 
