@@ -33,7 +33,7 @@ namespace yolo_home_camera_project.Views
             InitializeComponent();
 
             VideoListBox.ItemsSource = _videos;
-            TimelineDataGrid.ItemsSource = _timelineEvents;
+            TimelineListBox.ItemsSource = _timelineEvents;
 
             Loaded += VideoAnalysisPage_Loaded;
 
@@ -103,9 +103,9 @@ namespace yolo_home_camera_project.Views
                 .ToList();
         }
 
-        private void TimelineDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void TimelineListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (TimelineDataGrid.SelectedItem is not TimelineEvent selected)
+            if (TimelineListBox.SelectedItem is not TimelineEvent selected)
             {
                 return;
             }
@@ -288,9 +288,11 @@ namespace yolo_home_camera_project.Views
                 VideoSortMode.AddedDate => _sortAscending
                     ? files.OrderBy(file => file.LastWriteTime).ThenBy(file => file.Name)
                     : files.OrderByDescending(file => file.LastWriteTime).ThenBy(file => file.Name),
+
                 VideoSortMode.CreatedDate => _sortAscending
                     ? files.OrderBy(file => file.CreationTime).ThenBy(file => file.Name)
                     : files.OrderByDescending(file => file.CreationTime).ThenBy(file => file.Name),
+
                 _ => _sortAscending
                     ? files.OrderBy(file => file.Name)
                     : files.OrderByDescending(file => file.Name)
@@ -332,6 +334,7 @@ namespace yolo_home_camera_project.Views
         private void OpenVideosFolderButton_Click(object sender, RoutedEventArgs e)
         {
             DirectoryInfo videosFolder = FindVideosFolder() ?? CreateVideosFolder();
+
             Process.Start(new ProcessStartInfo
             {
                 FileName = videosFolder.FullName,
@@ -615,6 +618,7 @@ namespace yolo_home_camera_project.Views
             }
 
             string fileName = files[0];
+
             return IsVideoFile(fileName)
                 ? fileName
                 : null;
@@ -623,6 +627,7 @@ namespace yolo_home_camera_project.Views
         private static bool IsVideoFile(string fileName)
         {
             string extension = Path.GetExtension(fileName);
+
             return VideoExtensions.Any(videoExtension =>
                 videoExtension.Equals(extension, StringComparison.OrdinalIgnoreCase));
         }
