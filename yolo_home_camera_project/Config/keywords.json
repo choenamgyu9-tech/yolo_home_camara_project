@@ -48,5 +48,10 @@
     "Keyword": "winnie",
     "IsEnabled": false,
     "Threshold": 0.5
+  },
+  {
+    "Keyword": "The quick brown fox jumps over the lazy dog",
+    "IsEnabled": false,
+    "Threshold": 0.5
   }
 ]

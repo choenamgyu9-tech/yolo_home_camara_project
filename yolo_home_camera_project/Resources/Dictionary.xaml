@@ -3,6 +3,7 @@
 
     <FontFamily x:Key="AppFontFamily">Malgun Gothic</FontFamily>
 
+    <SolidColorBrush x:Key="AppBackgroundBrush" Color="#F7F7F7"/>
     <SolidColorBrush x:Key="TextPrimaryBrush" Color="#202733"/>
     <SolidColorBrush x:Key="TextSecondaryBrush" Color="#647084"/>
     <SolidColorBrush x:Key="PrimaryBrush" Color="#1F5F8B"/>
@@ -53,13 +54,63 @@
         <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
     </Style>
 
-    <Style x:Key="HomeSummaryCardStyle" TargetType="Border">
+    <Style x:Key="BaseButtonStyle" TargetType="Button">
+        <Setter Property="MinWidth" Value="48"/>
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="Padding" Value="10,0"/>
+        <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+
+    <Style x:Key="PrimaryButtonStyle"
+           TargetType="Button"
+           BasedOn="{StaticResource BaseButtonStyle}">
+        <Setter Property="Width" Value="150"/>
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+
+    <Style x:Key="IconButtonStyle"
+           TargetType="Button"
+           BasedOn="{StaticResource BaseButtonStyle}">
+        <Setter Property="Width" Value="32"/>
+        <Setter Property="MinWidth" Value="32"/>
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="Padding" Value="5"/>
+    </Style>
+
+    <Style x:Key="NavigationButtonStyle"
+           TargetType="Button"
+           BasedOn="{StaticResource BaseButtonStyle}">
+        <Setter Property="Height" Value="44"/>
+        <Setter Property="MinWidth" Value="0"/>
+        <Setter Property="Padding" Value="14,0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="FontSize" Value="13"/>
+    </Style>
+
+    <Style x:Key="ContentCardStyle" TargetType="Border">
         <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}"/>
         <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="6"/>
         <Setter Property="Padding" Value="18"/>
     </Style>
+
+    <Style x:Key="HomeSummaryCardStyle"
+           TargetType="Border"
+           BasedOn="{StaticResource ContentCardStyle}"/>
 
     <Style x:Key="TimelineEventCardStyle" TargetType="Border">
         <Setter Property="Background" Value="{StaticResource TimelineCardBackgroundBrush}"/>
@@ -68,6 +119,27 @@
         <Setter Property="CornerRadius" Value="6"/>
         <Setter Property="Padding" Value="12"/>
         <Setter Property="Margin" Value="0,0,0,10"/>
+    </Style>
+
+    <Style x:Key="VideoSurfaceStyle" TargetType="Border">
+        <Setter Property="Background" Value="#202124"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="ClipToBounds" Value="True"/>
+    </Style>
+
+    <Style x:Key="TimelineThumbnailStyle" TargetType="Border">
+        <Setter Property="Width" Value="72"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="Background" Value="#2A2D32"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="ConfidenceBadgeStyle" TargetType="Border">
+        <Setter Property="Background" Value="#EAF3FF"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 
     <Style x:Key="KeywordToggleButtonStyle" TargetType="ToggleButton">
