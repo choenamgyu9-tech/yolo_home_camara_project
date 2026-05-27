@@ -1,4 +1,4 @@
-﻿<Page x:Class="yolo_home_camera_project.Views.VideoAnalysisPage"
+<Page x:Class="yolo_home_camera_project.Views.VideoAnalysisPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Background="#FFF7F7F7"
@@ -394,12 +394,7 @@
 
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="#FFF8F9FB"
-                            BorderBrush="#FFE0E3E8"
-                            BorderThickness="1"
-                            CornerRadius="6"
-                            Padding="12"
-                            Margin="0,0,0,10">
+                                    <Border Style="{StaticResource TimelineEventCardStyle}">
 
                                         <Grid>
                                             <Grid.ColumnDefinitions>

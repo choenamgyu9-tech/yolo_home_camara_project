@@ -26,7 +26,12 @@ namespace yolo_home_camera_project.Services
 
             string json = await File.ReadAllTextAsync(_keywordFilePath);
 
-            return JsonSerializer.Deserialize<List<DetectionKeyword>>(json)
+            return JsonSerializer.Deserialize<List<DetectionKeyword>>(
+                       json,
+                       new JsonSerializerOptions
+                       {
+                           PropertyNameCaseInsensitive = true
+                       })
                    ?? new List<DetectionKeyword>();
         }
 

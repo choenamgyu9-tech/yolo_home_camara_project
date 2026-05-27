@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using yolo_home_camera_project.Data.Repositories;
 using yolo_home_camera_project.Models;
 using yolo_home_camera_project.Services;
 
@@ -25,6 +26,8 @@ namespace yolo_home_camera_project.Views
 
         private readonly PythonYoloService _pythonYoloService = new();
         private readonly KeywordService _keywordService = new();
+        private readonly DetectionEventRepository _detectionEventRepository = new();
+        private readonly AnalysisRunRepository _analysisRunRepository = new();
         private readonly ObservableCollection<TimelineEvent> _timelineEvents = [];
         private string? _selectedVideoPath;
 
@@ -200,6 +203,15 @@ namespace yolo_home_camera_project.Views
                     keywords,
                     confidence,
                     vidStride);
+
+                int analysisRunId = await _analysisRunRepository.CreateAnalysisRunAsync(
+                    _selectedVideoPath,
+                    confidence,
+                    vidStride,
+                    keywords);
+
+                await _detectionEventRepository.SaveDetectionResultsAsync(analysisRunId, detections);
+                await _analysisRunRepository.UpdateEventCountAsync(analysisRunId, detections.Count);
 
                 List<TimelineEvent> timelineEvents = BuildTimelineEvents(
                     detections,

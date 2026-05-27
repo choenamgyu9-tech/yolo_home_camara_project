@@ -3,24 +3,84 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Background="#FFF7F7F7">
     <Grid Margin="12">
-        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-        <TextBlock Text="Keyword Manage" FontSize="28" FontWeight="Bold"/>
-        <Grid Grid.Row="1" Margin="0,20,0,12">
-            <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-            <ComboBox SelectedIndex="0" Height="36"><ComboBoxItem Content="정렬"/></ComboBox>
-            <TextBox Grid.Column="1" Margin="12,0,0,0" Height="36" Text="키워드 검색"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Keyword Manage"
+                   Style="{StaticResource PageTitleTextStyle}"/>
+
+        <Grid Grid.Row="1"
+              Margin="0,0,0,12"
+              HorizontalAlignment="Right">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="260"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBox x:Name="AddKeywordTextBox"
+                     KeyDown="AddKeywordTextBox_KeyDown"/>
+
+            <Button Grid.Column="1"
+                    Content="추가"
+                    Margin="12,0,0,0"
+                    Click="AddKeywordButton_Click"/>
         </Grid>
-        <Border Grid.Row="2" Background="White" BorderBrush="#FFD9D9D9" BorderThickness="1" CornerRadius="6" Padding="18">
-            <StackPanel>
-                <TextBlock Text="키워드 목록" FontSize="18" FontWeight="Bold" Margin="0,0,0,14"/>
-                <CheckBox Content="dog" IsChecked="True"/>
-                <CheckBox Content="cat" IsChecked="True"/>
-                <CheckBox Content="bird" IsChecked="True"/>
-                <CheckBox Content="fire" IsChecked="True"/>
-                <CheckBox Content="person" IsChecked="True"/>
-                <CheckBox Content="refrigerator"/>
-            </StackPanel>
+
+        <Border Grid.Row="2"
+                Background="White"
+                BorderBrush="#FFD9D9D9"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="18">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="키워드 목록"
+                           Style="{StaticResource SectionTitleTextStyle}"
+                           Margin="0,0,0,14"/>
+
+                <Grid Grid.Row="1"
+                      Margin="0,0,0,14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="220"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ComboBox x:Name="SortComboBox"
+                              SelectedIndex="0"
+                              SelectionChanged="SortComboBox_SelectionChanged">
+                        <ComboBoxItem Content="이름 오름차순" Tag="NameAscending"/>
+                        <ComboBoxItem Content="이름 내림차순" Tag="NameDescending"/>
+                    </ComboBox>
+
+                    <TextBox x:Name="SearchKeywordTextBox"
+                             Grid.Column="1"
+                             Margin="12,0,0,0"
+                             TextChanged="SearchKeywordTextBox_TextChanged"/>
+                </Grid>
+
+                <ScrollViewer Grid.Row="2"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                    <WrapPanel x:Name="KeywordChipPanel"
+                               Orientation="Horizontal"
+                               VerticalAlignment="Top"/>
+                </ScrollViewer>
+            </Grid>
         </Border>
-        <TextBlock Grid.Row="3" Text="6개 / 80개" HorizontalAlignment="Right" Margin="0,12,0,0"/>
+
+        <TextBlock x:Name="KeywordCountText"
+                   Grid.Row="3"
+                   HorizontalAlignment="Right"
+                   Margin="0,12,0,0"
+                   Style="{StaticResource MutedTextStyle}"/>
     </Grid>
 </Page>
