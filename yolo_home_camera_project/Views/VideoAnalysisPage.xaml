@@ -78,21 +78,20 @@
 
                         <Button x:Name="PlayPauseButton"
                                 Content="&#x25B6;"
-                                Width="42"
-                                Height="34"
+                                Style="{StaticResource IconButtonStyle}"
                                 FontSize="16"
                                 ToolTip="Play/Pause"
                                 Click="PlayPauseButton_Click"/>
                         <Button Grid.Column="1"
                                 Content="&#x25A0;"
-                                Width="42"
-                                Height="34"
+                                Style="{StaticResource IconButtonStyle}"
                                 FontSize="16"
                                 Margin="8,0,0,0"
                                 ToolTip="Stop"
                                 Click="StopButton_Click"/>
                         <ComboBox x:Name="PlaybackSpeedComboBox"
                                   Grid.Column="4"
+                                  Style="{StaticResource BaseComboBoxStyle}"
                                   Width="92"
                                   Height="34"
                                   SelectedIndex="2"
@@ -108,6 +107,7 @@
                         <Slider x:Name="PositionSlider"
                                 Grid.Row="1"
                                 Grid.ColumnSpan="4"
+                                Style="{StaticResource BaseSliderStyle}"
                                 Margin="0,12,12,0"
                                 Minimum="0"
                                 ValueChanged="PositionSlider_ValueChanged"
@@ -149,6 +149,8 @@
                                        Margin="0,0,8,0"/>
 
                             <TextBox x:Name="ConfidenceTextBox"
+                                     Style="{StaticResource BaseInputStyle}"
+                                     Tag="&#xC2E0;&#xB8B0;&#xB3C4;"
                                      Width="70"
                                      Text="0.5"/>
 
@@ -158,13 +160,15 @@
                                        Margin="16,0,8,0"/>
 
                             <TextBox x:Name="VidStrideTextBox"
+                                     Style="{StaticResource BaseInputStyle}"
+                                     Tag="Stride"
                                      Width="70"
                                      Text="5"/>
                         </StackPanel>
 
                         <Button x:Name="AnalyzeButton"
-                                Content="YOLOE 분석 시작"
-                                Height="36"
+                                Content="YOLOE &#xBD84;&#xC11D; &#xC2DC;&#xC791;"
+                                Style="{StaticResource PrimaryButtonStyle}"
                                 Margin="0,0,0,8"
                                 Click="AnalyzeButton_Click"/>
 
@@ -208,9 +212,7 @@
                                        Margin="0"/>
                             <StackPanel Orientation="Horizontal"
                                         HorizontalAlignment="Right">
-                                <Button Width="34"
-                                        Height="30"
-                                        Padding="5"
+                                <Button Style="{StaticResource IconButtonStyle}"
                                         ToolTip="Open Videos folder"
                                         Click="OpenVideosFolderButton_Click">
                                     <Image Source="/folder_icon.png"
@@ -218,8 +220,7 @@
                                 </Button>
                                 <Button x:Name="SortMenuButton"
                                         Content="&#9776;"
-                                        Width="34"
-                                        Height="30"
+                                        Style="{StaticResource IconButtonStyle}"
                                         Margin="8,0,0,0"
                                         FontSize="16"
                                         ToolTip="Sort videos"
@@ -255,6 +256,7 @@
                                         </Grid.RowDefinitions>
 
                                         <Button Grid.Row="0"
+                                                Style="{StaticResource BaseButtonStyle}"
                                                 Background="Transparent"
                                                 BorderThickness="0"
                                                 Padding="0"
@@ -279,6 +281,7 @@
                                         <Border Grid.Row="1" Background="#FFEDEDED"/>
 
                                         <Button Grid.Row="2"
+                                                Style="{StaticResource BaseButtonStyle}"
                                                 Background="Transparent"
                                                 BorderThickness="0"
                                                 Padding="0"
@@ -302,6 +305,7 @@
                                         <Border Grid.Row="3" Background="#FFEDEDED"/>
 
                                         <Button Grid.Row="4"
+                                                Style="{StaticResource BaseButtonStyle}"
                                                 Background="Transparent"
                                                 BorderThickness="0"
                                                 Padding="0"
@@ -325,6 +329,7 @@
                                         <Border Grid.Row="5" Background="#FFD8D8D8"/>
 
                                         <Button Grid.Row="6"
+                                                Style="{StaticResource BaseButtonStyle}"
                                                 Background="Transparent"
                                                 BorderThickness="0"
                                                 Padding="0"
@@ -349,6 +354,7 @@
                                         <Border Grid.Row="7" Background="#FFEDEDED"/>
 
                                         <Button Grid.Row="8"
+                                                Style="{StaticResource BaseButtonStyle}"
                                                 Background="Transparent"
                                                 BorderThickness="0"
                                                 Padding="0"
