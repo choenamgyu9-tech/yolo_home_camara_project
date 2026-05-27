@@ -15,3 +15,8 @@ x86/
 *.log
 .DS_Store
 Thumbs.db
+
+# Local SQLite database files
+yolo_home_camera_project/Data/homecam.db
+yolo_home_camera_project/Data/homecam.db-shm
+yolo_home_camera_project/Data/homecam.db-wal
