@@ -12,7 +12,8 @@ namespace yolo_home_camera_project.Services
             string videoPath,
             IEnumerable<string> keywords,
             double confidence,
-            int vidStride)
+            int vidStride,
+            IProgress<int>? progress = null)
         {
             if (string.IsNullOrWhiteSpace(videoPath))
             {
@@ -112,11 +113,31 @@ namespace yolo_home_camera_project.Services
             };
 
             process.Start();
+            progress?.Report(0);
 
-            string stdout = await process.StandardOutput.ReadToEndAsync();
-            string stderr = await process.StandardError.ReadToEndAsync();
+            List<string> stdoutLines = [];
+            Task stdoutTask = Task.Run(async () =>
+            {
+                string? line;
+                while ((line = await process.StandardOutput.ReadLineAsync()) is not null)
+                {
+                    stdoutLines.Add(line);
+
+                    if (line.StartsWith("PROGRESS:", StringComparison.OrdinalIgnoreCase) &&
+                        int.TryParse(line["PROGRESS:".Length..], out int percent))
+                    {
+                        progress?.Report(Math.Clamp(percent, 0, 100));
+                    }
+                }
+            });
+
+            Task<string> stderrTask = process.StandardError.ReadToEndAsync();
 
             await process.WaitForExitAsync();
+            await stdoutTask;
+
+            string stdout = string.Join(Environment.NewLine, stdoutLines);
+            string stderr = await stderrTask;
 
             if (process.ExitCode != 0)
             {
@@ -142,6 +163,8 @@ namespace yolo_home_camera_project.Services
                     outputPath
                 );
             }
+
+            progress?.Report(100);
 
             string json = await File.ReadAllTextAsync(outputPath);
 

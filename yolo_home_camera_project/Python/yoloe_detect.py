@@ -5,7 +5,7 @@ import json
 import os
 from pathlib import Path
 import cv2
-from ultralytics import YOLOE
+from ultralytics import YOLO, YOLOE
 
 
 def seconds_to_time_str(seconds: float) -> str:
@@ -14,6 +14,20 @@ def seconds_to_time_str(seconds: float) -> str:
     m = (total_seconds % 3600) // 60
     s = total_seconds % 60
     return f"{h:02d}:{m:02d}:{s:02d}"
+
+
+def load_prompt_model(model_path: Path, keywords: list[str]):
+    model_name = model_path.name.lower()
+
+    if "world" in model_name:
+        model = YOLO(str(model_path))
+        model.set_classes(keywords)
+        return model
+
+    model = YOLOE(str(model_path))
+    text_embeddings = model.get_text_pe(keywords)
+    model.set_classes(keywords, text_embeddings)
+    return model
 
 
 def main():
@@ -55,16 +69,14 @@ def main():
     # 영상 FPS 확인
     cap = cv2.VideoCapture(str(video_path))
     fps = cap.get(cv2.CAP_PROP_FPS)
+    frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     if fps <= 0:
         fps = 30
     cap.release()
+    total_result_count = max(1, (frame_count + args.vid_stride - 1) // args.vid_stride)
 
     # YOLOE 모델 로드
-    model = YOLOE(str(model_path))
-
-    # 텍스트 키워드 설정
-    text_embeddings = model.get_text_pe(keywords)
-    model.set_classes(keywords, text_embeddings)
+    model = load_prompt_model(model_path, keywords)
 
     results = model.predict(
         source=str(video_path),
@@ -80,6 +92,8 @@ def main():
     for result_index, result in enumerate(results):
         # result_index는 분석된 프레임 순서
         original_frame_index = result_index * args.vid_stride
+        progress = min(99, int(((result_index + 1) / total_result_count) * 100))
+        print(f"PROGRESS:{progress}", flush=True)
         event_seconds = original_frame_index / fps
         event_time = seconds_to_time_str(event_seconds)
 
@@ -135,6 +149,8 @@ def main():
 
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(detection_events, f, ensure_ascii=False, indent=2)
+
+    print("PROGRESS:100", flush=True)
 
     print(f"분석 완료: {len(detection_events)}개 이벤트")
     print(f"결과 저장 경로: {output_path}")

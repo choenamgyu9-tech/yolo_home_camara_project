@@ -10,11 +10,16 @@ namespace yolo_home_camera_project.Views
     public partial class MainWindow : Window
     {
         private bool _isMenuOpen;
+        private readonly HomePage _homePage = new();
+        private readonly VideoAnalysisPage _videoAnalysisPage = new();
+        private readonly KeywordManagePage _keywordManagePage = new();
+        private readonly ReportPage _reportPage = new();
+        private readonly SettingsPage _settingsPage = new();
 
         public MainWindow()
         {
             InitializeComponent();
-            MainFrame.Navigate(new HomePage());
+            MainFrame.Navigate(_homePage);
         }
 
         private void MenuToggleButton_Click(object sender, RoutedEventArgs e)
@@ -67,31 +72,31 @@ namespace yolo_home_camera_project.Views
 
         private void VideoAnalysisButton_Click(object sender, RoutedEventArgs e)
         {
-            MainFrame.Navigate(new VideoAnalysisPage());
+            MainFrame.Navigate(_videoAnalysisPage);
             CloseSideMenu();
         }
 
         private void HomeButton_Click(object sender, RoutedEventArgs e)
         {
-            MainFrame.Navigate(new HomePage());
+            MainFrame.Navigate(_homePage);
             CloseSideMenu();
         }
 
         private void KeywordManageButton_Click(object sender, RoutedEventArgs e)
         {
-            MainFrame.Navigate(new KeywordManagePage());
+            MainFrame.Navigate(_keywordManagePage);
             CloseSideMenu();
         }
 
         private void ReportButton_Click(object sender, RoutedEventArgs e)
         {
-            MainFrame.Navigate(new ReportPage());
+            MainFrame.Navigate(_reportPage);
             CloseSideMenu();
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            MainFrame.Navigate(new SettingsPage());
+            MainFrame.Navigate(_settingsPage);
             CloseSideMenu();
         }
     }

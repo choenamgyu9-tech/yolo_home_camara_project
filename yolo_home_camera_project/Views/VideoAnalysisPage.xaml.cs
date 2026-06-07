@@ -27,6 +27,7 @@ namespace yolo_home_camera_project.Views
         private readonly KeywordService _keywordService = new();
         private readonly ObservableCollection<TimelineEvent> _timelineEvents = [];
         private string? _selectedVideoPath;
+        private TimeSpan? _lastAnalysisElapsed;
 
         public VideoAnalysisPage()
         {
@@ -162,13 +163,17 @@ namespace yolo_home_camera_project.Views
                 return;
             }
 
+            Stopwatch analysisStopwatch = new();
+
             try
             {
                 AnalyzeButton.IsEnabled = false;
                 AnalysisStatusText.Text = "Status: loading keywords...";
-                AnalysisProgressText.Text = "Progress: preparing";
-                AnalysisProgressBar.IsIndeterminate = true;
+                AnalysisProgressText.Text = "Progress: 0%";
+                AnalysisProgressBar.IsIndeterminate = false;
+                AnalysisProgressBar.Value = 0;
                 _timelineEvents.Clear();
+                _lastAnalysisElapsed = null;
 
                 List<string> keywords = await _keywordService.LoadEnabledKeywordNamesAsync();
 
@@ -194,12 +199,19 @@ namespace yolo_home_camera_project.Views
                     : 5;
 
                 AnalysisStatusText.Text = "Status: YOLOE analyzing...";
+                IProgress<int> analysisProgress = new Progress<int>(percent =>
+                {
+                    AnalysisProgressBar.Value = percent;
+                    AnalysisProgressText.Text = $"Progress: {percent}%";
+                });
+                analysisStopwatch.Start();
 
                 List<YoloDetectionResult> detections = await _pythonYoloService.AnalyzeVideoAsync(
                     _selectedVideoPath,
                     keywords,
                     confidence,
-                    vidStride);
+                    vidStride,
+                    analysisProgress);
 
                 List<TimelineEvent> timelineEvents = BuildTimelineEvents(
                     detections,
@@ -210,15 +222,27 @@ namespace yolo_home_camera_project.Views
                     _timelineEvents.Add(item);
                 }
 
+                analysisStopwatch.Stop();
+                _lastAnalysisElapsed = analysisStopwatch.Elapsed;
+                string elapsedText = FormatElapsedTime(_lastAnalysisElapsed.Value);
+
                 AnalysisProgressBar.IsIndeterminate = false;
                 AnalysisProgressBar.Value = 100;
                 AnalysisProgressText.Text = "Progress: 100%";
-                AnalysisStatusText.Text = $"Status: complete, {_timelineEvents.Count} timeline events";
+                AnalysisStatusText.Text = $"Status: complete, {_timelineEvents.Count} timeline events, elapsed {elapsedText}";
             }
             catch (Exception ex)
             {
+                if (analysisStopwatch.IsRunning)
+                {
+                    analysisStopwatch.Stop();
+                    _lastAnalysisElapsed = analysisStopwatch.Elapsed;
+                }
+
                 AnalysisProgressBar.IsIndeterminate = false;
-                AnalysisStatusText.Text = "Status: failed";
+                AnalysisStatusText.Text = _lastAnalysisElapsed is null
+                    ? "Status: failed"
+                    : $"Status: failed, elapsed {FormatElapsedTime(_lastAnalysisElapsed.Value)}";
                 MessageBox.Show(ex.Message);
             }
             finally
@@ -227,6 +251,56 @@ namespace yolo_home_camera_project.Views
             }
         }
 
+        private static string FormatElapsedTime(TimeSpan elapsed)
+        {
+            return elapsed.TotalHours >= 1
+                ? elapsed.ToString(@"hh\:mm\:ss\.fff")
+                : elapsed.ToString(@"mm\:ss\.fff");
+        }
+
+        private async void ExportTimelineButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_timelineEvents.Count == 0)
+            {
+                MessageBox.Show("There are no timeline results to export.");
+                return;
+            }
+
+            string defaultFileName = string.IsNullOrWhiteSpace(_selectedVideoPath)
+                ? "timeline_results.txt"
+                : $"{Path.GetFileNameWithoutExtension(_selectedVideoPath)}_timeline_results.txt";
+
+            SaveFileDialog dialog = new()
+            {
+                Title = "Save timeline results",
+                FileName = defaultFileName,
+                Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"
+            };
+
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            List<string> lines = new()
+            {
+                $"Analysis elapsed: {(_lastAnalysisElapsed is null ? "unknown" : FormatElapsedTime(_lastAnalysisElapsed.Value))}",
+                "YOLOE Detection Timeline",
+                $"Generated: {DateTime.Now:yyyy-MM-dd HH:mm:ss}",
+                $"Video: {_selectedVideoPath ?? "none"}",
+                string.Empty,
+                "Keyword\tStart\tEnd\tConfidence\tCount\tSnapshot"
+            };
+
+            foreach (TimelineEvent item in _timelineEvents)
+            {
+                string confidenceText = item.MaxConfidence.ToString("P1", System.Globalization.CultureInfo.InvariantCulture);
+                lines.Add($"{item.Keyword}\t{item.StartTime}\t{item.EndTime}\t{confidenceText}\t{item.DetectionCount}\t{item.SnapshotPath}");
+            }
+
+            await File.WriteAllLinesAsync(dialog.FileName, lines);
+            MessageBox.Show("Timeline results were saved.");
+        }
         private void OpenVideoButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dialog = new()
