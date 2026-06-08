@@ -70,5 +70,149 @@ namespace yolo_home_camera_project.Data.Repositories
 
             await transaction.CommitAsync();
         }
+
+        public async Task<List<DetectionEvent>> GetEventsByAnalysisRunIdAsync(int analysisRunId)
+        {
+            await _dbContext.InitializeDatabaseAsync();
+
+            List<DetectionEvent> events = new();
+
+            await using SqliteConnection connection = _dbContext.CreateConnection();
+            await connection.OpenAsync();
+
+            await using SqliteCommand command = connection.CreateCommand();
+            command.CommandText =
+                """
+                SELECT
+                    Id,
+                    AnalysisRunId,
+                    VideoPath,
+                    EventTime,
+                    EventSeconds,
+                    FrameIndex,
+                    Keyword,
+                    Confidence,
+                    IFNULL(SnapshotPath, ''),
+                    BoxX1,
+                    BoxY1,
+                    BoxX2,
+                    BoxY2,
+                    CreatedAt
+                FROM VideoEvents
+                WHERE AnalysisRunId = @analysisRunId
+                ORDER BY EventSeconds ASC, Id ASC;
+                """;
+
+            command.Parameters.AddWithValue("@analysisRunId", analysisRunId);
+
+            await using SqliteDataReader reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                events.Add(new DetectionEvent
+                {
+                    Id = reader.GetInt32(0),
+                    AnalysisRunId = reader.IsDBNull(1) ? null : reader.GetInt32(1),
+                    VideoPath = reader.GetString(2),
+                    EventTime = reader.GetString(3),
+                    EventSeconds = reader.GetDouble(4),
+                    FrameIndex = reader.GetInt32(5),
+                    Keyword = reader.GetString(6),
+                    Confidence = reader.GetDouble(7),
+                    SnapshotPath = reader.GetString(8),
+                    BoxX1 = reader.GetInt32(9),
+                    BoxY1 = reader.GetInt32(10),
+                    BoxX2 = reader.GetInt32(11),
+                    BoxY2 = reader.GetInt32(12),
+                    CreatedAt = DateTime.TryParse(reader.GetString(13), out DateTime createdAt)
+                        ? createdAt
+                        : DateTime.MinValue
+                });
+            }
+
+            return events;
+        }
+
+        public async Task<int> GetTodayEventCountAsync()
+        {
+            await _dbContext.InitializeDatabaseAsync();
+
+            await using SqliteConnection connection = _dbContext.CreateConnection();
+            await connection.OpenAsync();
+
+            await using SqliteCommand command = connection.CreateCommand();
+            command.CommandText =
+                """
+                SELECT COUNT(*)
+                FROM VideoEvents
+                WHERE date(CreatedAt, 'localtime') = date('now', 'localtime');
+                """;
+
+            object? result = await command.ExecuteScalarAsync();
+
+            return Convert.ToInt32(result);
+        }
+
+        public async Task<List<DetectionEvent>> GetRecentEventsAsync(int count)
+        {
+            await _dbContext.InitializeDatabaseAsync();
+
+            List<DetectionEvent> events = new();
+
+            await using SqliteConnection connection = _dbContext.CreateConnection();
+            await connection.OpenAsync();
+
+            await using SqliteCommand command = connection.CreateCommand();
+            command.CommandText =
+                """
+                SELECT
+                    Id,
+                    AnalysisRunId,
+                    VideoPath,
+                    EventTime,
+                    EventSeconds,
+                    FrameIndex,
+                    Keyword,
+                    Confidence,
+                    IFNULL(SnapshotPath, ''),
+                    BoxX1,
+                    BoxY1,
+                    BoxX2,
+                    BoxY2,
+                    CreatedAt
+                FROM VideoEvents
+                ORDER BY datetime(CreatedAt) DESC, Id DESC
+                LIMIT @count;
+                """;
+
+            command.Parameters.AddWithValue("@count", count);
+
+            await using SqliteDataReader reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                events.Add(new DetectionEvent
+                {
+                    Id = reader.GetInt32(0),
+                    AnalysisRunId = reader.IsDBNull(1) ? null : reader.GetInt32(1),
+                    VideoPath = reader.GetString(2),
+                    EventTime = reader.GetString(3),
+                    EventSeconds = reader.GetDouble(4),
+                    FrameIndex = reader.GetInt32(5),
+                    Keyword = reader.GetString(6),
+                    Confidence = reader.GetDouble(7),
+                    SnapshotPath = reader.GetString(8),
+                    BoxX1 = reader.GetInt32(9),
+                    BoxY1 = reader.GetInt32(10),
+                    BoxX2 = reader.GetInt32(11),
+                    BoxY2 = reader.GetInt32(12),
+                    CreatedAt = DateTime.TryParse(reader.GetString(13), out DateTime createdAt)
+                        ? createdAt
+                        : DateTime.MinValue
+                });
+            }
+
+            return events;
+        }
     }
 }

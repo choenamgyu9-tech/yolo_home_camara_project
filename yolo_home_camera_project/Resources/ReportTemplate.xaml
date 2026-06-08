@@ -69,7 +69,7 @@
                 BorderThickness="1"
                 Padding="22">
             <StackPanel>
-                <TextBlock Text="&#xD0D0;&#xC9C0; &#xBCF4;&#xACE0;&#xC11C;"
+                <TextBlock Text="{Binding Title}"
                            Style="{StaticResource ReportTitleTextStyle}"/>
 
                 <Border Height="2"
@@ -96,7 +96,7 @@
                     </Border>
                     <Border Grid.Column="1"
                             Style="{StaticResource ReportValueCellStyle}">
-                        <TextBlock Text="Home Camera 01"
+                        <TextBlock Text="{Binding CameraName}"
                                    Style="{StaticResource ReportCellTextStyle}"/>
                     </Border>
                     <Border Grid.Column="2"
@@ -107,7 +107,7 @@
                     </Border>
                     <Border Grid.Column="3"
                             Style="{StaticResource ReportRightCellBorderStyle}">
-                        <TextBlock Text="2026-03-12"
+                        <TextBlock Text="{Binding DetectionDate}"
                                    Style="{StaticResource ReportCellTextStyle}"/>
                     </Border>
 
@@ -120,7 +120,7 @@
                     <Border Grid.Row="1"
                             Grid.Column="1"
                             Style="{StaticResource ReportValueCellStyle}">
-                        <TextBlock Text="14:32:10"
+                        <TextBlock Text="{Binding DetectionTime}"
                                    Style="{StaticResource ReportCellTextStyle}"/>
                     </Border>
                     <Border Grid.Row="1"
@@ -133,7 +133,7 @@
                     <Border Grid.Row="1"
                             Grid.Column="3"
                             Style="{StaticResource ReportRightCellBorderStyle}">
-                        <TextBlock Text="sample_video.mp4"
+                        <TextBlock Text="{Binding VideoName}"
                                    Style="{StaticResource ReportCellTextStyle}"/>
                     </Border>
 
@@ -147,7 +147,7 @@
                             Grid.Column="1"
                             Grid.ColumnSpan="3"
                             Style="{StaticResource ReportBottomRightCellBorderStyle}">
-                        <TextBlock Text="Assets/Snapshots"
+                        <TextBlock Text="{Binding SnapshotPath}"
                                    Style="{StaticResource ReportCellTextStyle}"/>
                     </Border>
                 </Grid>
@@ -163,13 +163,6 @@
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="0.8*"/>
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
                     <Border Style="{StaticResource ReportHeaderCellStyle}">
                         <TextBlock Text="&#xD0D0;&#xC9C0;&#xB41C; &#xBB3C;&#xCCB4;"
                                    Style="{StaticResource ReportCellTextStyle}"
@@ -193,79 +186,42 @@
                                    Style="{StaticResource ReportCellTextStyle}"
                                    FontWeight="Bold"/>
                     </Border>
-
-                    <Border Grid.Row="1"
-                            Style="{StaticResource ReportValueCellStyle}">
-                        <TextBlock Text="person"
-                                   Style="{StaticResource ReportCellTextStyle}"/>
-                    </Border>
-                    <Border Grid.Row="1"
-                            Grid.Column="1"
-                            Style="{StaticResource ReportValueCellStyle}">
-                        <TextBlock Text="00:00:03"
-                                   Style="{StaticResource ReportCellTextStyle}"/>
-                    </Border>
-                    <Border Grid.Row="1"
-                            Grid.Column="2"
-                            Style="{StaticResource ReportValueCellStyle}">
-                        <TextBlock Text="00:00:08"
-                                   Style="{StaticResource ReportCellTextStyle}"/>
-                    </Border>
-                    <Border Grid.Row="1"
-                            Grid.Column="3"
-                            Style="{StaticResource ReportRightCellBorderStyle}">
-                        <TextBlock Text="0.91"
-                                   Style="{StaticResource ReportCellTextStyle}"/>
-                    </Border>
-
-                    <Border Grid.Row="2"
-                            Style="{StaticResource ReportValueCellStyle}">
-                        <TextBlock Text="cat"
-                                   Style="{StaticResource ReportCellTextStyle}"/>
-                    </Border>
-                    <Border Grid.Row="2"
-                            Grid.Column="1"
-                            Style="{StaticResource ReportValueCellStyle}">
-                        <TextBlock Text="00:00:11"
-                                   Style="{StaticResource ReportCellTextStyle}"/>
-                    </Border>
-                    <Border Grid.Row="2"
-                            Grid.Column="2"
-                            Style="{StaticResource ReportValueCellStyle}">
-                        <TextBlock Text="00:00:16"
-                                   Style="{StaticResource ReportCellTextStyle}"/>
-                    </Border>
-                    <Border Grid.Row="2"
-                            Grid.Column="3"
-                            Style="{StaticResource ReportRightCellBorderStyle}">
-                        <TextBlock Text="0.84"
-                                   Style="{StaticResource ReportCellTextStyle}"/>
-                    </Border>
-
-                    <Border Grid.Row="3"
-                            Style="{StaticResource ReportBottomCellBorderStyle}">
-                        <TextBlock Text="fire"
-                                   Style="{StaticResource ReportCellTextStyle}"/>
-                    </Border>
-                    <Border Grid.Row="3"
-                            Grid.Column="1"
-                            Style="{StaticResource ReportBottomCellBorderStyle}">
-                        <TextBlock Text="00:00:20"
-                                   Style="{StaticResource ReportCellTextStyle}"/>
-                    </Border>
-                    <Border Grid.Row="3"
-                            Grid.Column="2"
-                            Style="{StaticResource ReportBottomCellBorderStyle}">
-                        <TextBlock Text="00:00:21"
-                                   Style="{StaticResource ReportCellTextStyle}"/>
-                    </Border>
-                    <Border Grid.Row="3"
-                            Grid.Column="3"
-                            Style="{StaticResource ReportBottomRightCellBorderStyle}">
-                        <TextBlock Text="0.96"
-                                   Style="{StaticResource ReportCellTextStyle}"/>
-                    </Border>
                 </Grid>
+
+                <ItemsControl ItemsSource="{Binding DetectionRows}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="0.8*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Style="{StaticResource ReportValueCellStyle}">
+                                    <TextBlock Text="{Binding Keyword}"
+                                               Style="{StaticResource ReportCellTextStyle}"/>
+                                </Border>
+                                <Border Grid.Column="1"
+                                        Style="{StaticResource ReportValueCellStyle}">
+                                    <TextBlock Text="{Binding StartTime}"
+                                               Style="{StaticResource ReportCellTextStyle}"/>
+                                </Border>
+                                <Border Grid.Column="2"
+                                        Style="{StaticResource ReportValueCellStyle}">
+                                    <TextBlock Text="{Binding EndTime}"
+                                               Style="{StaticResource ReportCellTextStyle}"/>
+                                </Border>
+                                <Border Grid.Column="3"
+                                        Style="{StaticResource ReportRightCellBorderStyle}">
+                                    <TextBlock Text="{Binding Confidence}"
+                                               Style="{StaticResource ReportCellTextStyle}"/>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
 
                 <TextBlock Text="&#xACB0;&#xACFC; &#xBD84;&#xC11D;&#xD45C;"
                            Style="{StaticResource ReportSectionTextStyle}"
@@ -277,12 +233,6 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="90"/>
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
 
                     <Border Style="{StaticResource ReportHeaderCellStyle}">
                         <TextBlock Text="&#xAC10;&#xC9C0;&#xB41C; &#xC774;&#xBCA4;&#xD2B8;"
@@ -295,43 +245,32 @@
                                    Style="{StaticResource ReportCellTextStyle}"
                                    FontWeight="Bold"/>
                     </Border>
-
-                    <Border Grid.Row="1"
-                            Style="{StaticResource ReportValueCellStyle}">
-                        <TextBlock Text="person"
-                                   Style="{StaticResource ReportCellTextStyle}"/>
-                    </Border>
-                    <Border Grid.Row="1"
-                            Grid.Column="1"
-                            Style="{StaticResource ReportRightCellBorderStyle}">
-                        <TextBlock Text="5"
-                                   Style="{StaticResource ReportCellTextStyle}"/>
-                    </Border>
-
-                    <Border Grid.Row="2"
-                            Style="{StaticResource ReportValueCellStyle}">
-                        <TextBlock Text="cat"
-                                   Style="{StaticResource ReportCellTextStyle}"/>
-                    </Border>
-                    <Border Grid.Row="2"
-                            Grid.Column="1"
-                            Style="{StaticResource ReportRightCellBorderStyle}">
-                        <TextBlock Text="3"
-                                   Style="{StaticResource ReportCellTextStyle}"/>
-                    </Border>
-
-                    <Border Grid.Row="3"
-                            Style="{StaticResource ReportBottomCellBorderStyle}">
-                        <TextBlock Text="fire"
-                                   Style="{StaticResource ReportCellTextStyle}"/>
-                    </Border>
-                    <Border Grid.Row="3"
-                            Grid.Column="1"
-                            Style="{StaticResource ReportBottomRightCellBorderStyle}">
-                        <TextBlock Text="1"
-                                   Style="{StaticResource ReportCellTextStyle}"/>
-                    </Border>
                 </Grid>
+
+                <ItemsControl Width="260"
+                              HorizontalAlignment="Left"
+                              ItemsSource="{Binding SummaryRows}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="90"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Style="{StaticResource ReportValueCellStyle}">
+                                    <TextBlock Text="{Binding Keyword}"
+                                               Style="{StaticResource ReportCellTextStyle}"/>
+                                </Border>
+                                <Border Grid.Column="1"
+                                        Style="{StaticResource ReportRightCellBorderStyle}">
+                                    <TextBlock Text="{Binding Count}"
+                                               Style="{StaticResource ReportCellTextStyle}"/>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
 
                 <Grid Margin="0,34,0,0">
                     <Grid.ColumnDefinitions>

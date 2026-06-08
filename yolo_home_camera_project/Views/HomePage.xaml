@@ -20,7 +20,8 @@
                 <StackPanel>
                     <TextBlock Text="오늘 감지된 이벤트 수"
                                Style="{StaticResource BodyTextStyle}"/>
-                    <TextBlock Text="5개"
+                    <TextBlock x:Name="TodayEventCountText"
+                               Text="0개"
                                Style="{StaticResource PageTitleTextStyle}"
                                Margin="0,10,0,0"/>
                 </StackPanel>
@@ -31,7 +32,8 @@
                 <StackPanel>
                     <TextBlock Text="오늘 분석한 영상 수"
                                Style="{StaticResource BodyTextStyle}"/>
-                    <TextBlock Text="5개"
+                    <TextBlock x:Name="TodayAnalysisCountText"
+                               Text="0개"
                                Style="{StaticResource PageTitleTextStyle}"
                                Margin="0,10,0,0"/>
                 </StackPanel>
@@ -41,9 +43,15 @@
                 <StackPanel>
                     <TextBlock Text="최근 분석 바로가기"
                                Style="{StaticResource BodyTextStyle}"/>
-                    <TextBlock Text="5개"
-                               Style="{StaticResource PageTitleTextStyle}"
+                    <TextBlock x:Name="LatestAnalysisText"
+                               Text="없음"
+                               Style="{StaticResource SectionTitleTextStyle}"
+                               TextTrimming="CharacterEllipsis"
                                Margin="0,10,0,0"/>
+                    <TextBlock x:Name="LatestAnalysisDateText"
+                               Text=""
+                               Style="{StaticResource MutedTextStyle}"
+                               Margin="0,6,0,0"/>
                 </StackPanel>
             </Border>
         </UniformGrid>
@@ -60,14 +68,15 @@
                     <TextBlock Text="최근 감지 이벤트"
                                Style="{StaticResource SectionTitleTextStyle}"
                                Margin="0,0,0,14"/>
-                    <TextBlock Text="00:13  cat 감지"
-                               Style="{StaticResource BodyTextStyle}"
-                               Margin="0,0,0,10"/>
-                    <TextBlock Text="00:47  person 감지"
-                               Style="{StaticResource BodyTextStyle}"
-                               Margin="0,0,0,10"/>
-                    <TextBlock Text="01:21  fire 감지"
-                               Style="{StaticResource BodyTextStyle}"/>
+                    <ItemsControl x:Name="RecentEventItems">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}"
+                                           Style="{StaticResource BodyTextStyle}"
+                                           Margin="0,0,0,10"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
             </Border>
 
@@ -77,14 +86,16 @@
                     <TextBlock Text="최근 보고서"
                                Style="{StaticResource SectionTitleTextStyle}"
                                Margin="0,0,0,14"/>
-                    <TextBlock Text="보고서 1 (3/12)"
-                               Style="{StaticResource BodyTextStyle}"
-                               Margin="0,0,0,10"/>
-                    <TextBlock Text="보고서 2 (3/13)"
-                               Style="{StaticResource BodyTextStyle}"
-                               Margin="0,0,0,10"/>
-                    <TextBlock Text="보고서 3 (3/14)"
-                               Style="{StaticResource BodyTextStyle}"/>
+                    <ItemsControl x:Name="RecentReportItems">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}"
+                                           Style="{StaticResource BodyTextStyle}"
+                                           TextTrimming="CharacterEllipsis"
+                                           Margin="0,0,0,10"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
             </Border>
         </Grid>

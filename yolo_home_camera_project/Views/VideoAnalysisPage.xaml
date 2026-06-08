@@ -123,71 +123,87 @@
                     </Grid>
                 </Border>
 
+
                 <Border Grid.Row="2"
                         Style="{StaticResource ContentCardStyle}"
                         Padding="16">
-                    <StackPanel>
-                        <TextBlock Text="Analysis Status"
-                                   Style="{StaticResource SectionTitleTextStyle}"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="Analysis Status"
+                                       Style="{StaticResource SectionTitleTextStyle}"
+                                       VerticalAlignment="Center"/>
+
+                            <StackPanel Grid.Column="1"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Right">
+                                <TextBlock Text="Confidence:"
+                                           Style="{StaticResource BodyTextStyle}"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,8,0"/>
+                                <TextBox x:Name="ConfidenceTextBox"
+                                         Style="{StaticResource BaseInputStyle}"
+                                         Tag="&#xC2E0;&#xB8B0;&#xB3C4;"
+                                         Width="70"
+                                         Text="0.5"/>
+                                <TextBlock Text="Stride:"
+                                           Style="{StaticResource BodyTextStyle}"
+                                           VerticalAlignment="Center"
+                                           Margin="16,0,8,0"/>
+                                <TextBox x:Name="VidStrideTextBox"
+                                         Style="{StaticResource BaseInputStyle}"
+                                         Tag="Stride"
+                                         Width="70"
+                                         Text="5"/>
+                                <Button x:Name="AnalyzeButton"
+                                        Content="YOLOE &#xBD84;&#xC11D; &#xC2DC;&#xC791;"
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Margin="20,0,0,0"
+                                        Click="AnalyzeButton_Click"/>
+                            </StackPanel>
+                        </Grid>
 
                         <TextBlock x:Name="SelectedVideoText"
+                                   Grid.Row="1"
                                    Text="Selected video: none"
                                    Style="{StaticResource BodyTextStyle}"
-                                   Margin="0,0,0,8"/>
-
+                                   Margin="0,10,0,8"/>
                         <TextBlock x:Name="ActiveKeywordsText"
+                                   Grid.Row="2"
                                    Text="Active keywords: none"
                                    Style="{StaticResource BodyTextStyle}"
                                    TextWrapping="Wrap"
                                    Margin="0,0,0,8"/>
-
-                        <StackPanel Orientation="Horizontal"
+                        <StackPanel Grid.Row="3"
+                                    Orientation="Horizontal"
                                     Margin="0,0,0,8">
-                            <TextBlock Text="Confidence:"
-                                       Style="{StaticResource BodyTextStyle}"
-                                       VerticalAlignment="Center"
-                                       Margin="0,0,8,0"/>
-
-                            <TextBox x:Name="ConfidenceTextBox"
-                                     Style="{StaticResource BaseInputStyle}"
-                                     Tag="&#xC2E0;&#xB8B0;&#xB3C4;"
-                                     Width="70"
-                                     Text="0.5"/>
-
-                            <TextBlock Text="Stride:"
-                                       Style="{StaticResource BodyTextStyle}"
-                                       VerticalAlignment="Center"
-                                       Margin="16,0,8,0"/>
-
-                            <TextBox x:Name="VidStrideTextBox"
-                                     Style="{StaticResource BaseInputStyle}"
-                                     Tag="Stride"
-                                     Width="70"
-                                     Text="5"/>
+                            <TextBlock x:Name="AnalysisStatusText"
+                                       Text="Status: waiting"
+                                       Style="{StaticResource StatusTextStyle}"
+                                       Margin="0,0,24,0"/>
+                            <TextBlock x:Name="AnalysisProgressText"
+                                       Text="Progress: 0%"
+                                       Style="{StaticResource StatusTextStyle}"/>
                         </StackPanel>
-
-                        <Button x:Name="AnalyzeButton"
-                                Content="YOLOE &#xBD84;&#xC11D; &#xC2DC;&#xC791;"
-                                Style="{StaticResource PrimaryButtonStyle}"
-                                Margin="0,0,0,8"
-                                Click="AnalyzeButton_Click"/>
-
-                        <TextBlock x:Name="AnalysisStatusText"
-                                   Text="Status: waiting"
-                                   Style="{StaticResource StatusTextStyle}"
-                                   Margin="0,0,0,8"/>
-
-                        <TextBlock x:Name="AnalysisProgressText"
-                                   Text="Progress: 0%"
-                                   Style="{StaticResource StatusTextStyle}"
-                                   Margin="0,0,0,8"/>
-
                         <ProgressBar x:Name="AnalysisProgressBar"
+                                     Grid.Row="4"
                                      Height="14"
                                      Minimum="0"
                                      Maximum="100"
                                      Value="0"/>
-                    </StackPanel>
+                    </Grid>
                 </Border>
             </Grid>
 
