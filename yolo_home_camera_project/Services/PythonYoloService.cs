@@ -12,8 +12,10 @@ namespace yolo_home_camera_project.Services
             string videoPath,
             IEnumerable<string> keywords,
             double confidence,
-            int vidStride)
+            int vidStride,
+            CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             if (string.IsNullOrWhiteSpace(videoPath))
             {
                 throw new ArgumentException("분석할 영상 경로가 비어 있습니다.", nameof(videoPath));
@@ -113,10 +115,26 @@ namespace yolo_home_camera_project.Services
 
             process.Start();
 
-            string stdout = await process.StandardOutput.ReadToEndAsync();
-            string stderr = await process.StandardError.ReadToEndAsync();
+            Task<string> stdoutTask = process.StandardOutput.ReadToEndAsync(cancellationToken);
+            Task<string> stderrTask = process.StandardError.ReadToEndAsync(cancellationToken);
 
-            await process.WaitForExitAsync();
+            try
+            {
+                await process.WaitForExitAsync(cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                if (!process.HasExited)
+                {
+                    process.Kill(entireProcessTree: true);
+                    await process.WaitForExitAsync();
+                }
+
+                throw;
+            }
+
+            string stdout = await stdoutTask;
+            string stderr = await stderrTask;
 
             if (process.ExitCode != 0)
             {

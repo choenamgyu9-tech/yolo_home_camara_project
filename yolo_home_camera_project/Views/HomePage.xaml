@@ -1,7 +1,7 @@
 <Page x:Class="yolo_home_camera_project.Views.HomePage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Background="#FFF7F7F7">
+      Background="{StaticResource AppBackgroundBrush}">
     <Grid Margin="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -20,7 +20,8 @@
                 <StackPanel>
                     <TextBlock Text="오늘 감지된 이벤트 수"
                                Style="{StaticResource BodyTextStyle}"/>
-                    <TextBlock Text="5개"
+                    <TextBlock x:Name="TodayEventCountText"
+                               Text="0개"
                                Style="{StaticResource PageTitleTextStyle}"
                                Margin="0,10,0,0"/>
                 </StackPanel>
@@ -31,7 +32,8 @@
                 <StackPanel>
                     <TextBlock Text="오늘 분석한 영상 수"
                                Style="{StaticResource BodyTextStyle}"/>
-                    <TextBlock Text="5개"
+                    <TextBlock x:Name="TodayAnalysisCountText"
+                               Text="0개"
                                Style="{StaticResource PageTitleTextStyle}"
                                Margin="0,10,0,0"/>
                 </StackPanel>
@@ -41,9 +43,15 @@
                 <StackPanel>
                     <TextBlock Text="최근 분석 바로가기"
                                Style="{StaticResource BodyTextStyle}"/>
-                    <TextBlock Text="5개"
-                               Style="{StaticResource PageTitleTextStyle}"
+                    <TextBlock x:Name="LatestAnalysisText"
+                               Text="없음"
+                               Style="{StaticResource SectionTitleTextStyle}"
+                               TextTrimming="CharacterEllipsis"
                                Margin="0,10,0,0"/>
+                    <TextBlock x:Name="LatestAnalysisDateText"
+                               Text=""
+                               Style="{StaticResource MutedTextStyle}"
+                               Margin="0,6,0,0"/>
                 </StackPanel>
             </Border>
         </UniformGrid>
@@ -54,41 +62,40 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Border Margin="0,0,12,0"
-                    Background="White"
-                    BorderBrush="#FFD9D9D9"
-                    BorderThickness="1"
-                    CornerRadius="6"
-                    Padding="18">
+            <Border Style="{StaticResource ContentCardStyle}"
+                    Margin="0,0,12,0">
                 <StackPanel>
                     <TextBlock Text="최근 감지 이벤트"
-                               FontSize="18"
-                               FontWeight="Bold"
+                               Style="{StaticResource SectionTitleTextStyle}"
                                Margin="0,0,0,14"/>
-                    <TextBlock Text="00:13  cat 감지"
-                               Margin="0,0,0,10"/>
-                    <TextBlock Text="00:47  person 감지"
-                               Margin="0,0,0,10"/>
-                    <TextBlock Text="01:21  fire 감지"/>
+                    <ItemsControl x:Name="RecentEventItems">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}"
+                                           Style="{StaticResource BodyTextStyle}"
+                                           Margin="0,0,0,10"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
             </Border>
 
             <Border Grid.Column="1"
-                    Background="White"
-                    BorderBrush="#FFD9D9D9"
-                    BorderThickness="1"
-                    CornerRadius="6"
-                    Padding="18">
+                    Style="{StaticResource ContentCardStyle}">
                 <StackPanel>
                     <TextBlock Text="최근 보고서"
-                               FontSize="18"
-                               FontWeight="Bold"
+                               Style="{StaticResource SectionTitleTextStyle}"
                                Margin="0,0,0,14"/>
-                    <TextBlock Text="보고서 1 (3/12)"
-                               Margin="0,0,0,10"/>
-                    <TextBlock Text="보고서 2 (3/13)"
-                               Margin="0,0,0,10"/>
-                    <TextBlock Text="보고서 3 (3/14)"/>
+                    <ItemsControl x:Name="RecentReportItems">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}"
+                                           Style="{StaticResource BodyTextStyle}"
+                                           TextTrimming="CharacterEllipsis"
+                                           Margin="0,0,0,10"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
             </Border>
         </Grid>

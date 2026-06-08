@@ -8,28 +8,26 @@
         Title="YOLO Home Camera"
         Height="450"
         Width="800">
-    <Grid Background="#FFF7F7F7">
+    <Grid Background="{StaticResource AppBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Border Background="White"
-                BorderBrush="#FFE0E0E0"
+        <Border Background="{StaticResource CardBackgroundBrush}"
+                BorderBrush="{StaticResource CardBorderBrush}"
                 BorderThickness="0,0,0,1">
             <Grid Margin="20,0">
                 <Button x:Name="MenuToggleButton"
-                        Content="☰"
-                        Width="42"
-                        Height="42"
+                        Content="&#x2630;"
+                        Style="{StaticResource IconButtonStyle}"
                         FontSize="20"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Click="MenuToggleButton_Click"/>
 
                 <TextBlock Text="YOLO Home Camera"
-                           FontSize="20"
-                           FontWeight="Bold"
+                           Style="{StaticResource SectionTitleTextStyle}"
                            Margin="58,0,0,0"
                            VerticalAlignment="Center"/>
             </Grid>
@@ -43,8 +41,8 @@
         <Border x:Name="SideMenuPanel"
                 Grid.RowSpan="2"
                 Width="220"
-                Background="White"
-                BorderBrush="#FFD9D9D9"
+                Background="{StaticResource CardBackgroundBrush}"
+                BorderBrush="{StaticResource CardBorderBrush}"
                 BorderThickness="0,0,1,0"
                 HorizontalAlignment="Left"
                 RenderTransformOrigin="0,0"
@@ -59,20 +57,18 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <Border BorderBrush="#FFE0E0E0"
+                <Border BorderBrush="{StaticResource CardBorderBrush}"
                         BorderThickness="0,0,0,1">
                     <Grid Margin="20,0">
-                        <Button Content="☰"
-                                Width="42"
-                                Height="42"
+                        <Button Content="&#x2630;"
+                                Style="{StaticResource IconButtonStyle}"
                                 FontSize="20"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Click="MenuToggleButton_Click"/>
 
-                        <TextBlock Text="페이지"
-                                   FontSize="18"
-                                   FontWeight="Bold"
+                        <TextBlock Text="&#xD398;&#xC774;&#xC9C0;"
+                                   Style="{StaticResource SectionTitleTextStyle}"
                                    Margin="58,0,0,0"
                                    VerticalAlignment="Center"/>
                     </Grid>
@@ -80,24 +76,21 @@
 
                 <StackPanel Grid.Row="1"
                             Margin="12">
-                    <Button Content="홈 화면"
-                            Height="44"
-                            Margin="0,0,0,8"
+                    <Button Content="&#xD648; &#xD654;&#xBA74;"
+                            Style="{StaticResource NavigationButtonStyle}"
                             Click="HomeButton_Click"/>
-                    <Button Content="영상 분석 화면"
-                            Height="44"
-                            Margin="0,0,0,8"
+                    <Button Content="&#xC601;&#xC0C1; &#xBD84;&#xC11D; &#xD654;&#xBA74;"
+                            Style="{StaticResource NavigationButtonStyle}"
                             Click="VideoAnalysisButton_Click"/>
-                    <Button Content="키워드 관리 화면"
-                            Height="44"
-                            Margin="0,0,0,8"
+                    <Button Content="&#xD0A4;&#xC6CC;&#xB4DC; &#xAD00;&#xB9AC; &#xD654;&#xBA74;"
+                            Style="{StaticResource NavigationButtonStyle}"
                             Click="KeywordManageButton_Click"/>
-                    <Button Content="보고서 화면"
-                            Height="44"
-                            Margin="0,0,0,8"
+                    <Button Content="&#xBCF4;&#xACE0;&#xC11C; &#xD654;&#xBA74;"
+                            Style="{StaticResource NavigationButtonStyle}"
                             Click="ReportButton_Click"/>
-                    <Button Content="설정 화면"
-                            Height="44"
+                    <Button Content="&#xC124;&#xC815; &#xD654;&#xBA74;"
+                            Style="{StaticResource NavigationButtonStyle}"
+                            Margin="0"
                             Click="SettingsButton_Click"/>
                 </StackPanel>
             </Grid>

@@ -30,6 +30,7 @@ namespace yolo_home_camera_project.Views
         private readonly AnalysisRunRepository _analysisRunRepository = new();
         private readonly ObservableCollection<TimelineEvent> _timelineEvents = [];
         private string? _selectedVideoPath;
+        private CancellationTokenSource? _analysisCancellationTokenSource;
 
         public VideoAnalysisPage()
         {
@@ -165,6 +166,13 @@ namespace yolo_home_camera_project.Views
                 return;
             }
 
+            _analysisCancellationTokenSource = new CancellationTokenSource();
+            AnalysisProgressWindow progressWindow = new(_selectedVideoPath)
+            {
+                Owner = Window.GetWindow(this)
+            };
+            progressWindow.CancelRequested += (_, _) => _analysisCancellationTokenSource.Cancel();
+
             try
             {
                 AnalyzeButton.IsEnabled = false;
@@ -172,8 +180,10 @@ namespace yolo_home_camera_project.Views
                 AnalysisProgressText.Text = "Progress: preparing";
                 AnalysisProgressBar.IsIndeterminate = true;
                 _timelineEvents.Clear();
+                progressWindow.Show();
 
                 List<string> keywords = await _keywordService.LoadEnabledKeywordNamesAsync();
+                _analysisCancellationTokenSource.Token.ThrowIfCancellationRequested();
 
                 if (keywords.Count == 0)
                 {
@@ -197,12 +207,17 @@ namespace yolo_home_camera_project.Views
                     : 5;
 
                 AnalysisStatusText.Text = "Status: YOLOE analyzing...";
+                progressWindow.UpdateStatus("영상 프레임을 분석하고 있습니다.");
 
                 List<YoloDetectionResult> detections = await _pythonYoloService.AnalyzeVideoAsync(
                     _selectedVideoPath,
                     keywords,
                     confidence,
-                    vidStride);
+                    vidStride,
+                    _analysisCancellationTokenSource.Token);
+
+                _analysisCancellationTokenSource.Token.ThrowIfCancellationRequested();
+                progressWindow.UpdateStatus("분석 결과를 데이터베이스에 저장하고 있습니다.");
 
                 int analysisRunId = await _analysisRunRepository.CreateAnalysisRunAsync(
                     _selectedVideoPath,
@@ -227,6 +242,13 @@ namespace yolo_home_camera_project.Views
                 AnalysisProgressText.Text = "Progress: 100%";
                 AnalysisStatusText.Text = $"Status: complete, {_timelineEvents.Count} timeline events";
             }
+            catch (OperationCanceledException)
+            {
+                AnalysisProgressBar.IsIndeterminate = false;
+                AnalysisProgressBar.Value = 0;
+                AnalysisProgressText.Text = "Progress: cancelled";
+                AnalysisStatusText.Text = "Status: cancelled";
+            }
             catch (Exception ex)
             {
                 AnalysisProgressBar.IsIndeterminate = false;
@@ -235,10 +257,12 @@ namespace yolo_home_camera_project.Views
             }
             finally
             {
+                progressWindow.CloseAfterAnalysis();
+                _analysisCancellationTokenSource.Dispose();
+                _analysisCancellationTokenSource = null;
                 AnalyzeButton.IsEnabled = true;
             }
         }
-
         private void OpenVideoButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dialog = new()
@@ -487,6 +511,7 @@ namespace yolo_home_camera_project.Views
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
+            _analysisCancellationTokenSource?.Cancel();
             _playbackTimer.Stop();
             VideoPlayer.Stop();
             SetPlaybackState(false);
